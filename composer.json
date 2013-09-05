@@ -1,0 +1,29 @@
+{
+    "name": "marcelojeff/rox",
+    "description": "Module to configure ZF2 to use conventions",
+    "type": "library",
+    "keywords": [
+        "zf2",
+        "zend",
+        "module",
+        "mongo",
+        "mongodb"
+    ],
+    "authors": [
+        {
+            "name": "Marcelo Araújo",
+            "email": "jeffmcbrain@gmail.com"
+        }
+    ],
+    "require": {
+        "phly/phly-mongo": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Rox": "src/",
+        },
+        "classmap": [
+            "./"
+        ]
+    }
+}

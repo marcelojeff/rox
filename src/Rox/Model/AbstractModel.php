@@ -7,7 +7,14 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Validator\StringLength;
+use PhlyMongo\HydratingMongoCursor;
+use Rox\Hydrator\MagicMethods;
 
+/**
+ * TODO It has some mongodb especific methods, to correct this we can use a especific service provider
+ * @author marcelo
+ *
+ */
 abstract class AbstractModel implements InputFilterAwareInterface{
 	const INT = 'Zend\I18n\Validator\Int';
 	const ALPHA = 'Zend\I18n\Validator\Alpha';
@@ -19,10 +26,16 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	const REQUIRED = 2;
 
 	protected $inputFilter;
-	protected $_fields;
+	protected $fields;
+	protected $db;
+	protected $name; //for mongo it's the collection name
+	
+	public function __construct($db){
+		$this->db = $db;
+	}
 	
 	public function getFields(){
-		return array_keys($this->_fields);
+		return array_keys($this->fields);
 	}
 	public function setInputFilter(InputFilterInterface $inputFilter)
 	{
@@ -30,32 +43,27 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	}
 
 	public function __get($key){
-		if(isset($this->_fields[$key])){
-			return isset($this->_fields[$key]['value'])?$this->_fields[$key]['value']:null;
+		if(isset($this->fields[$key])){
+			return isset($this->fields[$key]['value'])?$this->fields[$key]['value']:null;
 		}
 		return null;
 	}
-	/**
-	 * TODO validate fields, allow dynamic fields (form NoSQL)
-	 * @param unknown $key
-	 * @param unknown $value
-	 * @throws \Exception
-	 */
 	public function __set($key, $value){
-		if(isset($this->_fields[$key])){
+	    $this->fields[$key]['value'] = $value;
+	    /*if(isset($this->fields[$key])){
 			//if($this->isValid($key, $value)){
-				$this->_fields[$key]['value'] = $value;
+				$this->fields[$key]['value'] = $value;
 			//} else {
 				//throw new \Exception(self::INVALID_VALUE);
 			//}
 		} else {
-			throw new \Exception(self::INVALID_FIELD);
-		}
+			//throw new \Exception(self::INVALID_FIELD);
+		}*/
 	}
 	public function getInputFilter(){
 		if (!$this->inputFilter) {
 			$inputFilter = new InputFilter();
-			foreach ($this->_fields as $name => $options){
+			foreach ($this->fields as $name => $options){
 	
 				$input = new Input($name);
 				$inputValidators = $input->getValidatorChain();
@@ -86,6 +94,37 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 		}
 		return $this->inputFilter;
 	}
+	/**
+	 * TODO It's especific for MongoDB
+	 * FIXME allow the use of conditional and especific columns
+	 * @return \PhlyMongo\HydratingMongoCursor
+	 */
+	public function findAll(){
+		return new HydratingMongoCursor(
+				$this->db->{$this->name}->find(),
+				new MagicMethods,
+				$this
+		);
+	}
+	/**
+	 * TODO It's especific for MongoDB
+	 * @param string $label
+	 * @return array An associative array with [value => label] format
+	 */
+	public function getAssocArray($label = 'name'){
+		$assoc = [];
+		$data = $this->db->{$this->name}->find([],['_id', $label]);
+		foreach ($data as $record){
+			$assoc[$record['_id']->{'$id'}] = $record[$label];
+		}
+		return $assoc;
+	}
+	/**
+	 * TODO It's especific for MongoDB
+	 * @param string $_id of document
+	 * @return array
+	 */
+	public function findById($_id){
+		return $this->db->{$this->name}->findOne(['_id' => new \MongoId($_id)]);
+	}
 }
-
-?>

@@ -1,0 +1,53 @@
+<?php
+if (isset ( $this->labelColunms )) {
+	$colunms = 12 - $this->labelColunms;
+} else {
+	$colunms = 9;
+	$labelColunms = 5;
+}
+$class = sprintf('form-horizontal %s',$form->getAttribute('class'));
+$form->setAttribute ( 'class', $class );
+$form->prepare ();
+// TODO test different types
+// TODO pass html elements (or something like that) to render beside inputs
+// TODO study errors translate
+$element = $form->get ( 'subject' );
+$labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
+?>
+
+<?= $this->form()->openTag($form)?>
+<?php foreach ($form->getElements() as $element): ?>
+	<?php if( $element->getAttribute('type') === 'hidden'):?>
+		<?= $this->formElement($element); ?>
+	<?php else:?>
+		<?php 
+			$hasError = $label = '';
+			$display = 'display: none;';
+			if ($errors = $this->formElementErrors ( $element )) {
+				$hasError = 'has-error';
+				$display = '';
+			}
+			$element->setAttribute ( 'class', 'form-control' );
+		?>
+		<?php
+			if($element->getLabel()){
+				$element->setLabelAttributes( ['class' => $labelClass] ); 
+				$label = $this->formlabel($element); 
+			}
+		?>
+		<div class="form-group <?= $hasError ?>">
+			 <?= $label ?>
+			 <div class="col-lg-<?= $colunms ?>">
+				<?= $this->formElement($element); ?>
+				<span class="help-block form-error" style="<?= $display ?>"><?= $errors ?></span>
+			</div>
+		</div>
+	<?php endif;?>
+<?php endforeach; ?>
+	<div class="form-group">
+		<div class="col-lg-offset-<?= $labelColunms ?> col-lg-<?= $colunms ?>">
+			<button class="btn btn-success" type="submit">Salvar</button>
+			<button class="btn btn-warning" type="button" data-dismiss="modal">Cancelar</button>
+		</div>
+	</div>
+<?= $this->form()->closeTag()?>

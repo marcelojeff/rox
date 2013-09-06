@@ -8,12 +8,12 @@ use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Validator\StringLength;
 use PhlyMongo\HydratingMongoCursor;
-use Rox\Hydrator\MagicMethods;
+use Zend\Stdlib\ArrayObject;
 
 /**
  * TODO It has some mongodb especific methods, to correct this we can use a especific service provider
- * @author marcelo
- *
+ * TODO Implements a interface to grant getFields()
+ * @author Marcelo Araújo
  */
 abstract class AbstractModel implements InputFilterAwareInterface{
 	const INT = 'Zend\I18n\Validator\Int';
@@ -28,10 +28,16 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	protected $inputFilter;
 	protected $fields;
 	protected $db;
+	protected $hydrator;
 	protected $name; //for mongo it's the collection name
 	
-	public function __construct($db){
+	public function __construct($db, $hydrator){
 		$this->db = $db;
+		$this->hydrator = $hydrator;
+		$this->fields['_id'] = null;
+		$currentClass = get_class($this);
+		$refl = new \ReflectionClass($currentClass);
+		$this->name = $refl->getShortName();
 	}
 	
 	public function getFields(){
@@ -44,55 +50,65 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 
 	public function __get($key){
 		if(isset($this->fields[$key])){
-			return isset($this->fields[$key]['value'])?$this->fields[$key]['value']:null;
+		    if(isset($this->fields[$key]['value'])){
+		        $value = $this->fields[$key]['value'];
+		        if(is_array($value)){
+                    return ($value['value']);
+		        } else {
+		        	return $value;
+		        }    
+		    }		    
 		}
 		return null;
 	}
 	public function __set($key, $value){
-	    $this->fields[$key]['value'] = $value;
-	    /*if(isset($this->fields[$key])){
-			//if($this->isValid($key, $value)){
-				$this->fields[$key]['value'] = $value;
-			//} else {
-				//throw new \Exception(self::INVALID_VALUE);
-			//}
-		} else {
-			//throw new \Exception(self::INVALID_FIELD);
-		}*/
+	    if(isset($this->fields[$key]) || $key === '_id'){
+	        $this->fields[$key]['value'] = $value;
+	    }
 	}
+	/*
+	 * TODO implement filters
+	 */
 	public function getInputFilter(){
 		if (!$this->inputFilter) {
 			$inputFilter = new InputFilter();
 			foreach ($this->fields as $name => $options){
-	
-				$input = new Input($name);
-				$inputValidators = $input->getValidatorChain();
-				$inputFilters = $input->getFilterChain();
-	
-				$type = $options[self::TYPE];
-				if($type){
-					if(is_array($type)){
-						$inputValidators->addValidator(new $type[0]($type[1]));
-					} else {
-						$inputValidators->addValidator(new $type);
-					}
-				}
-	
-				$length = $options[self::LENGTH];
-				if($length){
-					$inputValidators->addValidator(new StringLength(['encoding'=>'UTF-8','min'=>$length[0],'max'=>$length[1]]));
-				}
-				
-				if($options[self::REQUIRED]){
-					$input->setRequired(true);
-				} else {
-					$input->setRequired(false);
-				}
-				$inputFilter->add($input);
+	            if(!empty($options) && !is_object($options[self::TYPE])){
+	                $input = new Input($name);
+	                $inputValidators = $input->getValidatorChain();
+	                $inputFilters = $input->getFilterChain();
+	                
+	                $type = $options[self::TYPE];
+	                if($type){
+	                	if(is_array($type)){
+	                		$inputValidators->attach(new $type[0]($type[1]));
+	                	} else {
+	                		$inputValidators->attach(new $type);
+	                	}
+	                }
+	                $length = $options[self::LENGTH];
+	                if($length){
+	                	$inputValidators->attach(new StringLength(['encoding'=>'UTF-8','min'=>$length[0],'max'=>$length[1]]));
+	                }
+	                
+	                if($options[self::REQUIRED]){
+	                	$input->setRequired(true);
+	                } else {
+	                	$input->setRequired(false);
+	                }
+	                $inputFilter->add($input);
+   	            }
 			}
 			$this->inputFilter = $inputFilter;
 		}
 		return $this->inputFilter;
+	}
+	public function hydrateCollection(\MongoCursor $cursor){
+	    return new HydratingMongoCursor(
+	    		$cursor,
+	    		$this->hydrator,
+	    		$this
+	    );
 	}
 	/**
 	 * TODO It's especific for MongoDB
@@ -102,7 +118,7 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	public function findAll(){
 		return new HydratingMongoCursor(
 				$this->db->{$this->name}->find(),
-				new MagicMethods,
+				$this->hydrator,
 				$this
 		);
 	}
@@ -121,10 +137,44 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	}
 	/**
 	 * TODO It's especific for MongoDB
-	 * @param string $_id of document
+	 * @param mixed $id of document
 	 * @return array
 	 */
-	public function findById($_id){
-		return $this->db->{$this->name}->findOne(['_id' => new \MongoId($_id)]);
+	public function findById($id){
+		return $this->db->{$this->name}->findOne(['_id' => $this->getMongoId($id)]);
+	}
+	/**
+	 * TODO check edit
+	 * @param array $data
+	 */
+	public function save($data){
+	   $this->populate($data);
+	   $data = $this->getData();
+	   if(!$data['_id']){
+	       unset($data['_id']);
+	   } else {
+	       $data['_id'] = $this->getMongoId($data['_id']);
+	   }
+	   return $this->db->{$this->name}->save($data);
+	}
+	private function getMongoId($id){
+	    if($id instanceof \MongoId){
+	       return $id;
+	    }else{
+	    	return new \MongoId($id);
+	    }
+	}
+	/**
+	 * TODO check and throw exception on error
+	 * @param unknown $id
+	 */
+	public function delete($id){
+	    return $this->db->{$this->name}->remove(['_id' => $this->getMongoId($id)]);
+	}
+	public function populate($data){
+	   return $this->hydrator->hydrate($data, $this);
+	}
+	public function getData(){
+	    return $this->hydrator->extract($this);
 	}
 }

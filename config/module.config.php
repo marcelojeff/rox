@@ -49,5 +49,5 @@ return array(
     	'template_map' => array(
     		'form-bs3-horizontal'         => __DIR__ . '/../view/partial/form/bs3/horizontal.phtml',
     	),
-    ), 
+    ),
 );

@@ -17,7 +17,8 @@ class FlashMessenges extends AbstractHelper
   public function __invoke()
   {
   		$formatedMessages = '';
-		foreach ($this->flashMessenger->getCurrentErrorMessages() as $message){
+  		//FIXME get all messages
+		foreach ($this->flashMessenger->getSuccessMessages() as $message){
   			$formatedMessages .= sprintf('<p>%s</p>', $message);
 		}
 		$this->flashMessenger->clearMessages();

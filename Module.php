@@ -14,10 +14,10 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Rox\View\Helper\FlashMessenges;
 use Rox\Hydrator\MagicMethods;
+use PhlyMongo\MongoConnectionFactory;
 
 class Module implements AutoloaderProviderInterface
 {
-
     public function getAutoloaderConfig()
     {
         return array(
@@ -32,19 +32,9 @@ class Module implements AutoloaderProviderInterface
             )
         );
     }
-
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
-    }
-
-    public function onBootstrap(MvcEvent $e)
-    {
-        // You may not need to do this if you're doing it elsewhere in your
-        // application
-        $eventManager = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
     }
 
     public function getServiceConfig()
@@ -53,7 +43,13 @@ class Module implements AutoloaderProviderInterface
             'factories' => array(
                 'magic-methods' => function ($sm){
                     return new MagicMethods;
-                }
+                },
+                'mongo' => function ($sm){
+                	$config = $sm->get('config');
+                	$config = $config['mongo'];
+                	$factory = new MongoConnectionFactory($config['server'], $config['server_options']);
+                	return $factory->createService($sm)->selectDB($config['db']);
+                },
             )
         );
     }

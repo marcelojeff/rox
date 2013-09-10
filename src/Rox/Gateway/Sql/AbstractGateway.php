@@ -5,20 +5,25 @@ namespace Rox\Db\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway as ZendTableGateway;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Rox\Hydrator\MagicMethods;
+use PhlyMongo\HydratingMongoCursor;
+use Rox\Model\AbstractModel;
 
-class AbstractTableGateway extends ZendTableGateway {
-
+/**
+ * TODO rewrite construtor
+ * @author marcelo
+ *
+ */
+class AbstractTableGateway extends ZendTableGateway
+{
 	protected $prototype;
+	protected $db;
+	protected $hydrator;
 	
-	public function __construct($adapter, $prototype)
+	public function __construct($adapter, AbstractModel $prototype, $hydrator)
 	{
 		$this->adapter = $adapter;
 		$this->prototype = $prototype;
-		$this->resultSetPrototype = new HydratingResultSet(
-			new MagicMethods, $prototype	
-		);		
-		$this->resultSetPrototype->buffer();
-		$this->initialize();
+		$this->hydrator = $hydrator;
 	}
 	public function getInputFilter(){
 		return $this->prototype->getInputFilter();
@@ -26,5 +31,3 @@ class AbstractTableGateway extends ZendTableGateway {
 	
 	
 }
-
-?>

@@ -12,11 +12,12 @@ use Zend\Validator\StringLength;
  * This class represents a data model, for exemple a Mongo document or a Mysql row
  * @author Marcelo Araújo
  */
-abstract class AbstractModel implements InputFilterAwareInterface{
+abstract class AbstractModel {
 	const INT = 'Zend\I18n\Validator\Int';
 	const ALPHA = 'Zend\I18n\Validator\Alpha';
 	const EMAIL = 'Zend\Validator\EmailAddress';
 	const ALPHA_NUM = 'Zend\I18n\Validator\Alnum';
+	const IDENTICAL = 'Zend\Validator\Identical';
 	
 	const TYPE = 0;
 	const LENGTH = 1;
@@ -37,6 +38,9 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	}
 	public function getFields(){
 		return array_keys($this->fields);
+	}
+	public function isIgnorable($key){
+		return isset($this->fields[$key]['ignore'])?$this->fields[$key]['ignore']:false;
 	}
 	public function setInputFilter(InputFilterInterface $inputFilter)
 	{
@@ -69,45 +73,47 @@ abstract class AbstractModel implements InputFilterAwareInterface{
 	 * TODO implement filters
 	 * TODO how about files?
 	 */
-	public function getInputFilter()
+	public function getInputFilter($fields = null)
     {
         if (! $this->inputFilter) {
             $inputFilter = new InputFilter();
             foreach ($this->fields as $name => $options) {
-                if (! empty($options)) {
-                    if (! isset($options['embedded'])) {
-                        $input = new Input($name);
-                        $inputValidators = $input->getValidatorChain();
-                        $inputFilters = $input->getFilterChain();
-                        
-                        $type = $options[self::TYPE];
-                        if ($type) {
-                            if (is_array($type)) {
-                                $inputValidators->attach(new $type[0]($type[1]));
-                            } else {
-                                $inputValidators->attach(new $type());
-                            }
-                        }
-                        $length = $options[self::LENGTH];
-                        if ($length) {
-                            $inputValidators->attach(new StringLength([
-                                'encoding' => 'UTF-8',
-                                'min' => $length[0],
-                                'max' => $length[1]
-                            ]));
-                        }
-                        
-                        if ($options[self::REQUIRED]) {
-                            $input->setRequired(true);
-                        } else {
-                            $input->setRequired(false);
-                        }
-                        $inputFilter->add($input);
-                    } else {
-                        $embedded = new $options['embedded'];
-                    	$inputFilter->add($embedded->getInputFilter(), $name);
-                    }
-                }
+            	if(!$fields || in_array($name, $fields)){
+	                if (! empty($options)) {
+	                    if (! isset($options['embedded'])) {
+	                        $input = new Input($name);
+	                        $inputValidators = $input->getValidatorChain();
+	                        $inputFilters = $input->getFilterChain();
+	                        
+	                        $type = isset($options[self::TYPE])?$options[self::TYPE]:null;
+	                        if ($type) {
+	                            if (is_array($type)) {
+	                                $inputValidators->attach(new $type[0]($type[1]));
+	                            } else {
+	                                $inputValidators->attach(new $type());
+	                            }
+	                        }
+	                        $length = isset($options[self::LENGTH])?$options[self::LENGTH]:null;
+	                        if ($length) {
+	                            $inputValidators->attach(new StringLength([
+	                                'encoding' => 'UTF-8',
+	                                'min' => $length[0],
+	                                'max' => $length[1]
+	                            ]));
+	                        }
+	                        $required = isset($options[self::REQUIRED])?$options[self::REQUIRED]:null;
+	                        if ($required) {
+	                            $input->setRequired(true);
+	                        } else {
+	                            $input->setRequired(false);
+	                        }
+	                        $inputFilter->add($input);
+	                    } else {
+	                        $embedded = new $options['embedded'];
+	                    	$inputFilter->add($embedded->getInputFilter(), $name);
+	                    }
+	                }
+            	}
             }
             $this->inputFilter = $inputFilter;
         }

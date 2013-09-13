@@ -11,7 +11,9 @@ class MagicMethods implements HydratorInterface {
 		$data = [];
 		$fields = $object->getFields();
 		foreach ($fields as $field){
-			$data[$field] = $object->$field;
+			if(!$object->isIgnorable($field)){
+				$data[$field] = $object->$field;
+			}			
 		}
 		return $data;
 	}

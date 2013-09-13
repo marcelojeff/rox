@@ -34,9 +34,9 @@ class AbstractGateway
 	 * Proxy for Rox\Model\AbstractModel::getInputFilter()
 	 * @return Zend\InputFilter\InputFilter
 	 */
-    public function getInputFilter()
+    public function getInputFilter($fields = null)
     {
-        return $this->model->getInputFilter();
+        return $this->model->getInputFilter($fields);
     }
     /**
      * 

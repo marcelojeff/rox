@@ -47,7 +47,11 @@ return array(
             'Rox' => __DIR__ . '/../view',
         ),
     	'template_map' => array(
-    		'form-bs3-horizontal'         => __DIR__ . '/../view/partial/form/bs3/horizontal.phtml',
+    		'form-bs3-horizontal'	=> __DIR__ . '/../view/partial/form/bs3/horizontal.phtml',
+    		'message-bs3-error'	=> __DIR__ . '/../view/partial/message/bs3/error.phtml',
+    		'message-bs3-success'	=> __DIR__ . '/../view/partial/message/bs3/success.phtml',
+    		'message-bs3-default'	=> __DIR__ . '/../view/partial/message/bs3/default.phtml',
+    		'message-bs3-info'	=> __DIR__ . '/../view/partial/message/bs3/info.phtml',
     	),
     ),
 );

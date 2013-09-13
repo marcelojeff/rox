@@ -12,7 +12,7 @@ namespace Rox;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Rox\View\Helper\FlashMessenges;
+use Rox\View\Helper\FlashMessages;
 use Rox\Hydrator\MagicMethods;
 use PhlyMongo\MongoConnectionFactory;
 
@@ -58,12 +58,12 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
-                'flashMessenges' => function ($sm)
+                'flashMessages' => function ($sm)
                 {
                     $plugin = $sm->getServiceLocator()
                         ->get('ControllerPluginManager')
                         ->get('flashmessenger');
-                    $helper = new FlashMessenges($plugin);
+                    $helper = new FlashMessages($plugin);
                     return $helper;
                 }
             )

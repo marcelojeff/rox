@@ -54,4 +54,5 @@ return array(
     		'message-bs3-info'	=> __DIR__ . '/../view/partial/message/bs3/info.phtml',
     	),
     ),
+
 );

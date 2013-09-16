@@ -65,8 +65,11 @@ class Module implements AutoloaderProviderInterface
                         ->get('flashmessenger');
                     $helper = new FlashMessages($plugin);
                     return $helper;
-                }
-            )
+                },
+            ),
+            'invokables' => [
+            	'loggedUser' => 'Rox\View\Helper\LoggedUser',
+            ],
         );
     }
 }

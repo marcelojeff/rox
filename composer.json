@@ -3,11 +3,7 @@
     "description": "Module to configure ZF2 to use conventions",
     "type": "library",
     "keywords": [
-        "zf2",
-        "zend",
-        "module",
-        "mongo",
-        "mongodb"
+        "rox"
     ],
     "authors": [
         {

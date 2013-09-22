@@ -9,6 +9,8 @@ use Zend\Stdlib\Hydrator\HydratorInterface;
 /**
  * Use this class to implement collection especific methods
  * @todo Review docs and transactions checking success and thow exceptions in negative cases
+ * TODO implements a interface for common methods
+ * TODO call colectionName as just name, it'll be usable for all gateways
  * @author Marcelo Araújo
  */
 class AbstractGateway
@@ -23,7 +25,7 @@ class AbstractGateway
 	 * @param Rox\Model\AbstractModel $model
 	 * @param Zend\Stdlib\Hydrator\HydratorInterface $hydrator
 	 */
-	public function __construct(\MongoDB $db, AbstractModel $model, HydratorInterface $hydrator)
+	public function __construct($db, AbstractModel $model, HydratorInterface $hydrator)
 	{
 		$this->db = $db;
 		$this->model = $model;

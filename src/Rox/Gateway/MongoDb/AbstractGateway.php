@@ -1,45 +1,18 @@
 <?php
-namespace Rox\Gateway\Mongo;
+namespace Rox\Gateway\MongoDb;
 
-use Rox\Model\AbstractModel;
 use PhlyMongo\HydratingMongoCursor;
 use Zend\Crypt\PublicKey\Rsa\PublicKey;
-use Zend\Stdlib\Hydrator\HydratorInterface;
+use Rox\Gateway\RoxGateway;
 
 /**
  * Use this class to implement collection especific methods
  * @todo Review docs and transactions checking success and thow exceptions in negative cases
  * TODO implements a interface for common methods
- * TODO call colectionName as just name, it'll be usable for all gateways
  * @author Marcelo Araújo
  */
-class AbstractGateway
+class AbstractGateway extends RoxGateway
 {
-    protected $model;
-	protected $db;
-	protected $hydrator;
-	protected $collectionName;
-	/**
-	 * 
-	 * @param \MongoDB $db
-	 * @param Rox\Model\AbstractModel $model
-	 * @param Zend\Stdlib\Hydrator\HydratorInterface $hydrator
-	 */
-	public function __construct($db, AbstractModel $model, HydratorInterface $hydrator)
-	{
-		$this->db = $db;
-		$this->model = $model;
-		$this->hydrator = $hydrator;
-		$this->collectionName = $this->model->getName();
-	}
-	/**
-	 * Proxy for Rox\Model\AbstractModel::getInputFilter()
-	 * @return Zend\InputFilter\InputFilter
-	 */
-    public function getInputFilter($fields = null)
-    {
-        return $this->model->getInputFilter($fields);
-    }
     /**
      * 
      * @param \MongoCursor $cursor
@@ -58,9 +31,9 @@ class AbstractGateway
      */
     public function findAll(){
     	return new HydratingMongoCursor(
-    			$this->db->{$this->collectionName}->find(),
+    			$this->db->{$this->name}->find(),
     			$this->hydrator,
-    			$this
+    			$this->model
     	);
     }
     /**
@@ -69,7 +42,7 @@ class AbstractGateway
      */
     public function getAssocArray($label = 'name'){
     	$assoc = [];
-    	$data = $this->db->{$this->collectionName}->find([],['_id', $label]);
+    	$data = $this->db->{$this->name}->find([],['_id', $label]);
     	foreach ($data as $record){
     		$assoc[$record['_id']->{'$id'}] = $record[$label];
     	}
@@ -81,7 +54,7 @@ class AbstractGateway
      * @return array
      */
     public function findById($id){
-    	return $this->db->{$this->collectionName}->findOne(['_id' => $this->getMongoId($id)]);
+    	return $this->db->{$this->name}->findOne(['_id' => $this->getMongoId($id)]);
     }
     /**
      * 
@@ -102,7 +75,7 @@ class AbstractGateway
     	} else {
     		$data['_id'] = $this->getMongoId($data['_id']);
     	}
-    	return $this->db->{$this->collectionName}->save($data);
+    	return $this->db->{$this->name}->save($data);
     }
     /**
      * Convert a string into a \MongoId
@@ -121,6 +94,6 @@ class AbstractGateway
      * @return mixed
      */
     public function delete($id){
-    	return $this->db->{$this->collectionName}->remove(['_id' => $this->getMongoId($id)]);
+    	return $this->db->{$this->name}->remove(['_id' => $this->getMongoId($id)]);
     }
 }

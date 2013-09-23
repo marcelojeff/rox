@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "phly/phly-mongo": "dev-master"
+        "phly/phly-mongo": "dev-master",
+        "doctrine/inflector": "dev-master"
     },
     "autoload": {
         "psr-0": {

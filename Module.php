@@ -15,6 +15,8 @@ use Zend\Mvc\MvcEvent;
 use Rox\View\Helper\FlashMessages;
 use Rox\Hydrator\MagicMethods;
 use PhlyMongo\MongoConnectionFactory;
+use Rox\View\Helper\LoggedUser;
+use Zend\Session\Container;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -50,6 +52,9 @@ class Module implements AutoloaderProviderInterface
                 	$factory = new MongoConnectionFactory($config['server'], $config['server_options']);
                 	return $factory->createService($sm)->selectDB($config['db']);
                 },
+                'logged_user_container' => function($sm){
+                	return new Container('logged_user');
+                },
             )
         );
     }
@@ -66,10 +71,11 @@ class Module implements AutoloaderProviderInterface
                     $helper = new FlashMessages($plugin);
                     return $helper;
                 },
+                'loggedUser' => function ($sm){
+                	return new LoggedUser($sm->getServiceLocator()->get('logged_user_container'));
+                }
             ),
-            'invokables' => [
-            	'loggedUser' => 'Rox\View\Helper\LoggedUser',
-            ],
+            
         );
     }
 }

@@ -6,7 +6,10 @@ use Zend\View\Helper\AbstractHelper;
 use Zend\Mvc\Controller\Plugin\FlashMessenger;
 
 class FlashMessages extends AbstractHelper {
+	
 	protected $flashMessenger;
+	private $template; 
+	
 	public function __construct(FlashMessenger $flashMessenger) {
 		$this->flashMessenger = $flashMessenger;
 	}
@@ -20,13 +23,14 @@ class FlashMessages extends AbstractHelper {
 			foreach ($messages as $message){
 				$messagesModel[] = ['message' => $message];
 			}
-			//TODO change template dynamicaly
-			$renderedMessages = $this->view->partialLoop("message-bs3-$namespace", $messagesModel);
+			$partial = sprintf("message-%s-%s", $this->template, $namespace);
+			$renderedMessages = $this->view->partialLoop($partial, $messagesModel);
 		}
 		return $renderedMessages;
 	}
 	
-	public function __invoke() {
+	public function __invoke($template = 'bs3') {
+		$this->template = $template;
 		$formatedMessages = '';
 		$formatedMessages .= $this->getMessages(FlashMessenger::NAMESPACE_ERROR);
 		$formatedMessages .= $this->getMessages(FlashMessenger::NAMESPACE_SUCCESS);

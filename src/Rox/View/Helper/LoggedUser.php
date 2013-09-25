@@ -8,10 +8,14 @@ use Zend\Session\Container;
 
 class LoggedUser extends AbstractHelper {
 
+	private $container;
+	
+	public function __construct($container) {
+		$this->container = $container;
+	}
 	public function __invoke() {
-		$container = new Container('loggedUser');
-		if(isset($container->name)){
-			return $container->name;
+		if(isset($this->container->name)){
+			return $this->container->name;
 		} else {
 			return null;
 		}

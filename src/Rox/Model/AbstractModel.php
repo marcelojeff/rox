@@ -18,6 +18,7 @@ abstract class AbstractModel {
 	const EMAIL = 'Zend\Validator\EmailAddress';
 	const ALPHA_NUM = 'Zend\I18n\Validator\Alnum';
 	const IDENTICAL = 'Zend\Validator\Identical';
+	const POST_CODE = 'Zend\I18n\Validator\PostCode';
 	
 	const TYPE = 0;
 	const LENGTH = 1;
@@ -50,23 +51,35 @@ abstract class AbstractModel {
 	public function __get($key){
 		if(isset($this->fields[$key])){
             if(isset($this->fields[$key]['value'])){
-                if(is_array($this->fields[$key]['value'])){
+                /*if(is_array($this->fields[$key]['value'])){
                     $obj = new \ArrayObject($this->fields[$key]['value']);
                     return $obj;
                 }else{
                     return $this->fields[$key]['value'];
-                }
+                }*/
+            	return $this->fields[$key]['value'];
 		    }		    
 		}
 		return null;
 	}
+	/**
+	 * TODO this $key === '_id' is for mongo, refactor
+	 * @param unknown $key
+	 * @param unknown $value
+	 */
 	public function __set($key, $value){
 	    if(isset($this->fields[$key]) || $key === '_id'){
 	        /*if(isset($this->fields[$key]['embedded']) && !isset($this->fields[$key]['value'])){	            
 	           $this->fields[$key]['value'] = new $this->fields[$key]['embedded']; 
-	        }else{*/
+	        }else{
 	            $this->fields[$key]['value'] = $value;
-	        //}	        
+	        }*/
+	    	if($value){
+	    		$this->fields[$key]['value'] = $value;
+	    	} elseif(isset($this->fields[$key]['default'])) {
+	    		$this->fields[$key]['value'] = $this->fields[$key]['default'];
+	    	}
+	    	
 	    }
 	}
 	/*
@@ -95,6 +108,9 @@ abstract class AbstractModel {
 	                        }
 	                        $length = isset($options[self::LENGTH])?$options[self::LENGTH]:null;
 	                        if ($length) {
+	                        	if(!is_array($length)){
+	                        		$length = [0 => $length, 1=> $length];
+	                        	}
 	                            $inputValidators->attach(new StringLength([
 	                                'encoding' => 'UTF-8',
 	                                'min' => $length[0],
@@ -108,7 +124,7 @@ abstract class AbstractModel {
 	                            $input->setRequired(false);
 	                        }
 	                        $inputFilter->add($input);
-	                    } else {
+	                    } elseif(!isset($options['skip_validation']) && !$options['skip_validation']) {
 	                        $embedded = new $options['embedded'];
 	                    	$inputFilter->add($embedded->getInputFilter(), $name);
 	                    }

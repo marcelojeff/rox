@@ -28,6 +28,4 @@ class AbstractTableGateway extends ZendTableGateway
 	public function getInputFilter(){
 		return $this->prototype->getInputFilter();
 	}
-	
-	
 }

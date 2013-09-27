@@ -26,7 +26,14 @@ class AbstractGateway extends RoxGateway
     	);
     }
     /**
-     * Find all documents from especific colection   
+     * @return \MongoCollection
+     */
+    public function getCollection(){
+    	return $this->db->{$this->name};
+    }
+    /**
+     * Find all documents from especific colection
+     * TODO use criteria as optional   
      * @return \PhlyMongo\HydratingMongoCursor
      */
     public function findAll(){
@@ -75,6 +82,7 @@ class AbstractGateway extends RoxGateway
     	} else {
     		$data['_id'] = $this->getMongoId($data['_id']);
     	}
+    	
     	return $this->db->{$this->name}->save($data);
     }
     /**
@@ -85,8 +93,10 @@ class AbstractGateway extends RoxGateway
     public function getMongoId($id){
     	if($id instanceof \MongoId){
     		return $id;
-    	}else{
+    	}elseif($id){
     		return new \MongoId($id);
+    	} else {
+    		throw new \Exception('Parâmetro inválido');
     	}
     }
     /**

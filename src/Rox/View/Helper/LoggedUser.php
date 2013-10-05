@@ -13,9 +13,9 @@ class LoggedUser extends AbstractHelper {
 	public function __construct($container) {
 		$this->container = $container;
 	}
-	public function __invoke() {
-		if(isset($this->container->name)){
-			return $this->container->name;
+	public function __invoke($field) {
+		if(isset($this->container->$field)){
+			return $this->container->$field;
 		} else {
 			return null;
 		}

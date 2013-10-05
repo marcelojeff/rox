@@ -47,9 +47,9 @@ class AbstractGateway extends RoxGateway
      * @param string $label
      * @return array An associative array with [value => label] format
      */
-    public function getAssocArray($label = 'name'){
+    public function getAssocArray($criteria = [], $label = 'name'){
     	$assoc = [];
-    	$data = $this->db->{$this->name}->find([],['_id', $label]);
+    	$data = $this->db->{$this->name}->find($criteria,['_id', $label]);
     	foreach ($data as $record){
     		$assoc[$record['_id']->{'$id'}] = $record[$label];
     	}

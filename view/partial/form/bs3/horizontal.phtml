@@ -41,6 +41,7 @@ $labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
 		</div>
 	<?php endif;?>
 <?php endforeach; //FIXME as you can see there is lots of repited code, use recursive? ?>
+
 <?php foreach ($form->getFieldsets() as $name => $fieldset): ?>
     <?php foreach ($fieldset->getElements() as $element): ?>
         <?php if( $element->getAttribute('type') === 'hidden'):?>

@@ -8,10 +8,11 @@ use Zend\Authentication\Result;
 
 class AuthAdapter implements AdapterInterface {
 	
-	private $username;
-	private $password;
-	private $gateway;
-	private $container;
+	protected $username;
+	protected $password;
+	protected $gateway;
+	protected $container;
+	protected $user;
 	
 	public function __construct($gateway, $container) {
 		$this->gateway = $gateway;
@@ -22,16 +23,19 @@ class AuthAdapter implements AdapterInterface {
 		$this->password = $password;
 	}
 	public function authenticate() {
-		$user = $this->gateway->findByUsername($this->username);
-		if ($user) {
+		$this->user = $this->gateway->findByUsername($this->username);
+		if ($this->user) {
 			$bcrypt = new Bcrypt();
-			if ($bcrypt->verify ( $this->password, $user->password )) {
-				$this->container->username = $user->email;
-				$this->container->name = $user->name;
-				$this->container->type = $user->type;
+			if ($bcrypt->verify ( $this->password, $this->user->password )) {
+				$this->container->username = $this->user->email;
+				$this->container->name = $this->user->name;
+				$this->container->type = $this->user->type;
 				return new Result(Result::SUCCESS, $this->username);
 			}
 		}
 		return new Result(Result::FAILURE, null);
+	}
+	public function getContainer(){
+	    return $this->container;
 	}
 }

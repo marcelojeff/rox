@@ -13,6 +13,18 @@ use Rox\Gateway\RoxGateway;
  */
 class AbstractGateway extends RoxGateway
 {
+	/**
+	 * 
+	 * @param mixed $id
+	 * @param string $module
+	 * @param string $collection
+	 * @return array
+	 */
+	public function getReference($id, $module, $collection){
+		$className = "$module\Gateway\MongoDb\\$collection";
+		$gateway = new $className($this->db);
+		return $gateway->findById($id);
+	}
     /**
      * 
      * @param \MongoCursor $cursor

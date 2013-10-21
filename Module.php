@@ -75,7 +75,10 @@ class Module implements AutoloaderProviderInterface
                 	return new LoggedUser($sm->getServiceLocator()->get('logged_user_container'));
                 }
             ),
-            
+            'invokables' => [
+            		'simpleFormRow' => 'Rox\View\Helper\SimpleFormRow',
+            		'compoundFormRow' => 'Rox\View\Helper\CompoundFormRow',
+            ]
         );
     }
 }

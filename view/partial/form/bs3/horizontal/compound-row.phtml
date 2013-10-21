@@ -1,0 +1,17 @@
+<div class="form-group">
+	<?php foreach ($elements as $element): ?>
+		<?= $element['label'] ?>
+		<div class="col-md-<?= $element['colunms'][1] ?> <?= $element['has_error'] ?>">
+			<?php if(isset($element['prepend_addon'])): ?>
+				<div class="input-group">
+	            	<?= $element['prepend_addon'] ?>
+            		<?= $this->formElement($element['element']); ?>
+				</div>
+			<?php else: ?>
+				<?= $this->formElement($element['element']); ?>
+			<?php endif;?>
+			<span class="help-block form-error" style="<?= $element['display_errors'] ?>"><?= $element['errors'] ?></span>
+		</div>
+		
+	<?php endforeach; ?>
+</div>

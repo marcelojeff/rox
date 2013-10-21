@@ -45,12 +45,11 @@ class AbstractGateway extends RoxGateway
     }
     /**
      * Find all documents from especific colection
-     * TODO use criteria as optional   
      * @return \PhlyMongo\HydratingMongoCursor
      */
-    public function findAll(){
+    public function findAll($criteria = []){
     	return new HydratingMongoCursor(
-    			$this->db->{$this->name}->find(),
+    			$this->db->{$this->name}->find($criteria),
     			$this->hydrator,
     			$this->model
     	);

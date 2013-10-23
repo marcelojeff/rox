@@ -25,6 +25,20 @@ class AbstractGateway extends RoxGateway
 		$gateway = new $className($this->db);
 		return $gateway->findById($id);
 	}
+	/**
+	 * 
+	 * @param array $documents
+	 * @param int $id
+	 * @return array|NULL
+	 */
+	public function getSubDocument($documents, $id) {
+		foreach ($documents as $document) {
+			if($document['_id'] == $id){
+				return $document;
+			}
+		}
+		return null;
+	}
     /**
      * 
      * @param \MongoCursor $cursor
@@ -94,7 +108,8 @@ class AbstractGateway extends RoxGateway
     		$data['_id'] = $this->getMongoId($data['_id']);
     	}
     	
-    	return $this->db->{$this->name}->save($data);
+    	$this->db->{$this->name}->save($data);
+    	return $data;
     }
     /**
      * Convert a string into a \MongoId

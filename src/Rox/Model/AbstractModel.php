@@ -68,7 +68,7 @@ abstract class AbstractModel {
 	 * @param unknown $value
 	 */
 	public function __set($key, $value){
-	    if(isset($this->fields[$key]) || $key === '_id'){
+	    if(isset($this->fields[$key]) || $key === '_id' || isset($this->fields['dynamic'])){
 	        /*if(isset($this->fields[$key]['embedded']) && !isset($this->fields[$key]['value'])){	            
 	           $this->fields[$key]['value'] = new $this->fields[$key]['embedded']; 
 	        }else{

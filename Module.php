@@ -78,6 +78,7 @@ class Module implements AutoloaderProviderInterface
             'invokables' => [
             		'simpleFormRow' => 'Rox\View\Helper\SimpleFormRow',
             		'compoundFormRow' => 'Rox\View\Helper\CompoundFormRow',
+            		'inlineCheckbox' => 'Rox\View\Helper\InlineCheckbox'
             ]
         );
     }

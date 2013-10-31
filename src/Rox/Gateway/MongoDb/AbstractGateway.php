@@ -2,6 +2,8 @@
 namespace Rox\Gateway\MongoDb;
 
 use PhlyMongo\HydratingMongoCursor;
+use PhlyMongo\HydratingPaginatorAdapter as MongoPaginatorAdapter;
+use Zend\Paginator\Paginator;
 use Zend\Crypt\PublicKey\Rsa\PublicKey;
 use Rox\Gateway\RoxGateway;
 
@@ -59,14 +61,19 @@ class AbstractGateway extends RoxGateway
     }
     /**
      * Find all documents from especific colection
-     * @return \PhlyMongo\HydratingMongoCursor
+     * @return \Zend\Paginator\Paginator
      */
-    public function findAll($criteria = []){
-    	return new HydratingMongoCursor(
-    			$this->db->{$this->name}->find($criteria),
+    public function findAll($criteria = [], $sort = null){
+    	$cursor = $this->db->{$this->name}->find($criteria);
+    	if($sort){
+    		$cursor->sort($sort);
+    	}
+    	$adapter = new MongoPaginatorAdapter(new HydratingMongoCursor(
+    			$cursor,
     			$this->hydrator,
     			$this->model
-    	);
+    	));
+    	return new Paginator($adapter);
     }
     /**
      * @param string $label

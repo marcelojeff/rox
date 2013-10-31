@@ -9,8 +9,7 @@ if (isset ( $this->labelColunms )) {
 $class = sprintf('form-horizontal %s',$form->getAttribute('class'));
 $form->setAttribute ( 'class', $class );
 $form->prepare ();
-// TODO test different types
-// TODO pass html elements (or something like that) to render beside inputs
+// TODO use row_helpers here
 $labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
 ?>
 

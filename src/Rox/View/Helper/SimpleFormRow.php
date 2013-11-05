@@ -38,6 +38,9 @@ class SimpleFormRow extends AbstractHelper {
 		}
 		if(!$element->getAttribute('class')){
 			$element->setAttribute ( 'class', 'form-control' );
+		} else {
+			$class = $element->getAttribute('class') . ' form-control'; 
+			$element->setAttribute('class', $class);
 		}		
 		if($element->getLabel()){
 			$element->setLabelAttributes( ['class' => $labelClass] );

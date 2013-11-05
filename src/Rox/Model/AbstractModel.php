@@ -93,7 +93,7 @@ abstract class AbstractModel {
             foreach ($this->fields as $name => $options) {
             	if(!$fields || in_array($name, $fields)){
 	                if (! empty($options)) {
-	                    if (! isset($options['embedded'])) {
+	                    if (! isset($options['embedded']) && !isset($options['skip_validation'])) {
 	                        $input = new Input($name);
 	                        $inputValidators = $input->getValidatorChain();
 	                        $inputFilters = $input->getFilterChain();

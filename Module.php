@@ -17,6 +17,7 @@ use Rox\Hydrator\MagicMethods;
 use PhlyMongo\MongoConnectionFactory;
 use Rox\View\Helper\LoggedUser;
 use Zend\Session\Container;
+use Everyman\Neo4j\Client;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -45,6 +46,9 @@ class Module implements AutoloaderProviderInterface
             'factories' => array(
                 'magic-methods' => function ($sm){
                     return new MagicMethods;
+                },
+                'neo4j' => function($sm){
+                  return new Client();  
                 },
                 'mongo' => function ($sm){
                 	$config = $sm->get('config');

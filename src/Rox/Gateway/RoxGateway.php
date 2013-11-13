@@ -16,10 +16,11 @@ class RoxGateway {
 	protected $reflectionClass;
 	/**
 	 *
-	 * @param \MongoDB $db
+	 * @param mixed $db
 	 * @param Rox\Model\AbstractModel $model
 	 * @param Zend\Stdlib\Hydrator\HydratorInterface $hydrator
 	 */
+	
 	public function __construct($db, AbstractModel $model = null, HydratorInterface $hydrator = null)
 	{
 		$this->db = $db;
@@ -29,18 +30,29 @@ class RoxGateway {
 		$this->setHydrator($hydrator);
 	
 	}
+	/**
+	 *
+	 * @param array $data
+	 */
+	public function filterData(array $data){
+		$model = $this->hydrator->hydrate($data, $this->model);
+		return $this->hydrator->extract($model);
+	}
 	public function setModel($model){
 		if($model){
 			$this->model = $model;
 		} else {
-			$inflector = new Inflector();
-			$name = $this->reflectionClass->getShortName();
+			$modelName = $this->getModelName();
 			$namespace = $this->reflectionClass->getNamespaceName();
-			$modelName = $inflector->singularize($name);
 			$modelNamespace = substr($namespace, 0, strpos($namespace,"\\"));
 			$modelClassName = sprintf('\%s\Model\%s',$modelNamespace, $modelName);
 			$this->model = new $modelClassName;
 		}
+	}
+	public function getModelName() {
+	    $inflector = new Inflector();
+	    $name = $this->reflectionClass->getShortName();
+	    return $inflector->singularize($name);
 	}
 	public function setHydrator($hydrator){
 		if($hydrator){

@@ -96,14 +96,6 @@ class AbstractGateway extends RoxGateway
     	return $this->db->{$this->name}->findOne(['_id' => $this->getMongoId($id)]);
     }
     /**
-     * 
-     * @param array $data
-     */
-    public function filterData(array $data){
-    	$model = $this->hydrator->hydrate($data, $this->model);
-    	return $this->hydrator->extract($model);
-    }
-    /**
      * @param array $data
      * @return mixed
      */

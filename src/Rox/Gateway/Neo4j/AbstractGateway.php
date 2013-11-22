@@ -1,25 +1,42 @@
 <?php
 namespace Rox\Gateway\Neo4j;
 
-abstract class AbstractGateway
+use Rox\Gateway\RoxGateway;
+
+abstract class AbstractGateway extends RoxGateway
 {
-    protected $model;
-    protected $db;
-    protected $hydrator;
-    protected $collectionName;
-    /**
-     *
-     * @param $db
-     * @param Rox\Model\AbstractModel $model
-     * @param Zend\Stdlib\Hydrator\HydratorInterface $hydrator
-     */
-    public function __construct($db, AbstractModel $model, HydratorInterface $hydrator)
-    {
-    	$this->db = $db;
-    	$this->model = $model;
-    	$this->hydrator = $hydrator;
-    	//$this->collectionName = $this->model->getName();
+    protected $nodeLabel;
+    function __construct($db) {
+        parent::__construct($db);
+        $this->nodeLabel = $this->db->makeLabel($this->getModelName());
+    }
+    public function create($data) {
+    	$node = $this->db->makeNode();
+    	$data = $this->filterData($data);
+    	foreach ($data as $key => $value) {
+    		$node->setProperty($key, $value);
+    	}
+    	$node->save();
+    	$node->addLabels([$this->nodeLabel]);
+    	return $node;
+    }
+    //FIXME refactoring duplicated code
+    public function edit($data, $id) {
+    	$node = $this->findById($id);
+    	$data = $this->filterData($data);
+    	foreach ($data as $key => $value) {
+    		$node->setProperty($key, $value);
+    	}
+    	return $node->save();
+    }
+    public function findAll() {
+    	return $this->nodeLabel->getNodes();
+    }
+    public function findById($id) {
+    	return $this->db->getNode($id);
+    }
+    public function delete($id){
+    	$node = $this->db->getNode($id);
+    	return $node->delete();
     }
 }
-
-?>

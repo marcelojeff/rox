@@ -1,72 +1,18 @@
 <?php
-use Zend\Form\Fieldset;
-if (isset ( $this->labelColunms )) {
-	$colunms = 12 - $this->labelColunms;
-} else {
-	$colunms = 9;
-	$labelColunms = 5;
-}
 $class = sprintf('form-horizontal %s',$form->getAttribute('class'));
 $form->setAttribute ( 'class', $class );
 $form->prepare ();
-// TODO use row_helpers here
 $labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
 ?>
 
 <?= $this->form()->openTag($form)?>
 <?php foreach ($form->getElements() as $element): ?>
-	<?php if( $element->getAttribute('type') === 'hidden'):?>
-		<?= $this->formElement($element); ?>
-	<?php else:?>
-		<?php 
-			$hasError = $label = '';
-			$display = 'display: none;';
-			if ($errors = $this->formElementErrors ( $element )) {
-				$hasError = 'has-error';
-				$display = '';
-			}
-			$element->setAttribute ( 'class', 'form-control' );
-			if($element->getLabel()){
-				$element->setLabelAttributes( ['class' => $labelClass] ); 
-				$label = $this->formlabel($element); 
-			}
-		?>
-		<div class="form-group <?= $hasError ?>">
-			 <?= $label ?>
-			 <div class="col-lg-<?= $colunms ?>">
-				<?= $this->formElement($element); ?>
-				<span class="help-block form-error" style="<?= $display ?>"><?= $errors ?></span>
-			</div>
-		</div>
-	<?php endif;?>
-<?php endforeach; //FIXME as you can see there is lots of repited code, use recursive? ?>
+	<?= $this->simpleFormRow($element) ?>
+<?php endforeach; //FIXME is there a better way to handle fieldsets? maybe should we use a recursive solution? ?>
 
 <?php foreach ($form->getFieldsets() as $name => $fieldset): ?>
     <?php foreach ($fieldset->getElements() as $element): ?>
-        <?php if( $element->getAttribute('type') === 'hidden'):?>
-    		<?= $this->formElement($element); ?>
-    	<?php else:?>
-    		<?php 
-    			$hasError = $label = '';
-    			$display = 'display: none;';
-    			if ($errors = $this->formElementErrors ( $element )) {
-    				$hasError = 'has-error';
-    				$display = '';
-    			}
-    			$element->setAttribute ( 'class', 'form-control' );
-    			if($element->getLabel()){
-    				$element->setLabelAttributes( ['class' => $labelClass] ); 
-    				$label = $this->formlabel($element); 
-    			}
-    		?>
-    		<div class="form-group <?= $hasError ?>">
-    			 <?= $label ?>
-    			 <div class="col-lg-<?= $colunms ?>">
-    				<?= $this->formElement($element); ?>
-    				<span class="help-block form-error" style="<?= $display ?>"><?= $errors ?></span>
-    			</div>
-    		</div>
-    	<?php endif;?>
+    	<?= $this->simpleFormRow($element) ?>
     <?php endforeach; ?>
 <?php endforeach;?>
 <?php $submitLabel = isset($submitText)?$submitText:'Salvar'; ?>

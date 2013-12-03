@@ -3,6 +3,7 @@ $class = sprintf('form-horizontal %s',$form->getAttribute('class'));
 $form->setAttribute ( 'class', $class );
 $form->prepare ();
 $labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
+$colunms = 12 - $labelColunms;
 ?>
 
 <?= $this->form()->openTag($form)?>

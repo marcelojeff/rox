@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Zend Framework (http://framework.zend.com/)
+ * MarceloJeff Rox
  *
- * @link      http://github.com/zendframework/Rox for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @link      http://github.com/marcelojeff/rox
+ * @copyright Copyright (c) 2013 Marcelo Araújo
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 namespace Rox;
@@ -18,6 +18,9 @@ use PhlyMongo\MongoConnectionFactory;
 use Rox\View\Helper\LoggedUser;
 use Zend\Session\Container;
 use Everyman\Neo4j\Client;
+use Zend\Permissions\Acl\Acl;
+use Zend\Permissions\Acl\Role\GenericRole;
+use Zend\Permissions\Acl\Resource\GenericResource;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -34,6 +37,51 @@ class Module implements AutoloaderProviderInterface
                 )
             )
         );
+    }
+    public function initAcl(MvcEvent $e) {
+    	$acl = new Acl ();
+    	$config = $e->getApplication ()->getServiceManager()->get('config')['acl'];
+    	foreach ( $config ['roles'] as $role => $parents ) {
+    		$acl->addRole ( new GenericRole ( $role ), $parents );
+    	}
+    	foreach ( $config ['resources'] as $resource => $permissions ) {
+    		$acl->addResource ( new GenericResource ($resource));
+    		foreach ( $permissions as $action => $roles ) {
+    			foreach ($roles as $role => $privileges){
+    				$acl->$action ( $role, $resource, $privileges );
+    			}
+    		}
+    	}
+    	$e->getViewModel ()->acl = $acl;
+    }
+    private function getResource($route, $controller) {
+    	$route = explode('/', $route);
+    	return sprintf ( '%s/%s', $route[0], strtolower ( $controller ) );
+    }
+    public function checkAcl(MvcEvent $e) {
+    	$route = $e->getRouteMatch ()->getMatchedRouteName ();
+    	$controller = $e->getRouteMatch ()->getParam ( '__CONTROLLER__' );
+    	$action = $e->getRouteMatch ()->getParam ( 'action' );
+    	$resource = $this->getResource($route, $controller);
+    	$session = $e->getApplication ()->getServiceManager ()->get ( 'logged_user_container' );
+    	if ($session->type) {
+    		$userRole = $session->type;
+    	} else {
+    		$userRole = 'guest';
+    	}
+    	$acl = $e->getViewModel ()->acl;
+    	if (! $acl->hasResource ( $resource ) || ! $acl->isAllowed ( $userRole, $resource, $action )) {
+    		$url = $e->getRouter ()->assemble ( [
+    				'action' => 'login'
+    				], [
+    				'name' => 'user/default'
+    				] );
+    		$response = $e->getResponse ();
+    		$response->getHeaders ()->addHeaderLine ( 'Location', $url );
+    		$response->setStatusCode ( 302 );
+    		$response->sendHeaders ();
+    		exit ();
+    	}
     }
     public function getConfig()
     {

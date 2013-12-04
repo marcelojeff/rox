@@ -74,7 +74,7 @@ abstract class AbstractModel {
 	        }else{
 	            $this->fields[$key]['value'] = $value;
 	        }*/
-	    	if($value){
+	    	if(isset($value)){
 	    		$this->fields[$key]['value'] = $value;
 	    	} elseif(isset($this->fields[$key]['default'])) {
 	    		$this->fields[$key]['value'] = $this->fields[$key]['default'];

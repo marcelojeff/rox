@@ -8,6 +8,13 @@ class SimpleFormRow extends AbstractHelper {
 	
 	private $template; 
 	
+	
+	protected function getClass($element) {
+	   if($element->getAttribute('class')){
+	       return $element->getAttribute('class') . ' form-control';
+		}
+		return 'form-control';
+	}
 	/**
 	 * append_addon
 	 * prepend_addon
@@ -15,7 +22,7 @@ class SimpleFormRow extends AbstractHelper {
 	 * prepend_html
 	 * element_colunms
 	 * label_colunms
-	 * 
+	 *
 	 * TODO change templates in runtime
 	 * @param unknown $element
 	 * @param array $options
@@ -29,29 +36,22 @@ class SimpleFormRow extends AbstractHelper {
 		if(isset($options['element_colunms'])) {
 			$elementColunms = $options['element_colunms'];
 		}
-		$labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
+		
 		$prependAddon = $appendAddon = $inputGroup = $hasError = $label = '';
 		$display = 'display: none;';
 		if ($errors = $this->view->formElementErrors ( $element )) {
 			$hasError = 'has-error';
 			$display = '';
 		}
-		if(!$element->getAttribute('class')){
-			$element->setAttribute ( 'class', 'form-control' );
-		} else {
-			$class = $element->getAttribute('class') . ' form-control'; 
-			$element->setAttribute('class', $class);
-		}		
+		$element->setAttribute('class', $this->getClass($element));
+			
 		if($element->getLabel()){
+		    $labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
 			$element->setLabelAttributes( ['class' => $labelClass] );
 			$label = $this->view->formlabel($element);
 		}
-		//TODO use element option
-		if(isset($options['append_addon'])){
-			$appendAddon = $options['append_addon'];
-			$inputGroup = 'input-group';
-		}
-		if($prependAddon = $element->getOption('prepend_addon')){
+
+		if(($prependAddon = $element->getOption('prepend_addon')) || ($appendAddon = $element->getOption('append_addon'))){
 			$inputGroup = 'input-group';
 		}
 		return $this->view->partial('form-bs3-horizontal-simple-row', [
@@ -62,7 +62,7 @@ class SimpleFormRow extends AbstractHelper {
 				'hasError' => $hasError,
 				'errors' => $errors,
 				'input_group' => $inputGroup,
-				'append_html' => isset($options['append_html'])?$options['append_html']:'',
+				'append_html' => isset($options['append_html'])?$options['append_html']:'', //TODO use element option
 				'prepend_html' => isset($options['prepend_html'])?$options['prepend_html']:'',
 				'append_addon' => $appendAddon,
 				'prepend_addon' => $prependAddon,

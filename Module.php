@@ -101,8 +101,9 @@ class Module implements AutoloaderProviderInterface
                 'mongo' => function ($sm){
                 	$config = $sm->get('config');
                 	$config = $config['mongo'];
-                	$factory = new MongoConnectionFactory($config['server'], $config['server_options']);
-                	return $factory->createService($sm)->selectDB($config['db']);
+               	    $factory = new MongoConnectionFactory($config['server'], $config['server_options']);
+               	    return $factory->createService($sm)->selectDB($config['db']);
+               	
                 },
                 'logged_user_container' => function($sm){
                 	return new Container('logged_user');

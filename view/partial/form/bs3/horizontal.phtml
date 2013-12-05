@@ -10,12 +10,23 @@ $colunms = 12 - $labelColunms;
 <?php foreach ($form->getElements() as $element): ?>
 	<?= $this->simpleFormRow($element) ?>
 <?php endforeach; //FIXME is there a better way to handle fieldsets? maybe should we use a recursive solution? ?>
-
-<?php foreach ($form->getFieldsets() as $name => $fieldset): ?>
+<?php
+function renderFieldsets($fieldsets, $obj){
+    foreach ($fieldsets as $fieldset){
+        foreach ($fieldset->getElements() as $element){
+    	   echo $obj->simpleFormRow($element);
+    	}
+    	renderFieldsets($fieldset->getFieldsets(), $obj);
+    }
+}
+?>
+<?php /*foreach ($form->getFieldsets() as $fieldset): ?>
     <?php foreach ($fieldset->getElements() as $element): ?>
     	<?= $this->simpleFormRow($element) ?>
     <?php endforeach; ?>
-<?php endforeach;?>
+<?php endforeach; */
+renderFieldsets($form->getFieldsets(), $this)?>
+
 <?php $submitLabel = isset($submitText)?$submitText:'Salvar'; ?>
 	<div class="form-group">
 		<div class="col-lg-offset-<?= $labelColunms ?> col-lg-<?= $colunms ?>">

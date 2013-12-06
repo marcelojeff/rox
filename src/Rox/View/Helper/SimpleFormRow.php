@@ -62,8 +62,8 @@ class SimpleFormRow extends AbstractHelper {
 				'hasError' => $hasError,
 				'errors' => $errors,
 				'input_group' => $inputGroup,
-				'append_html' => isset($options['append_html'])?$options['append_html']:'', //TODO use element option
-				'prepend_html' => isset($options['prepend_html'])?$options['prepend_html']:'',
+				'append_html' => $element->getOption('append_html'), //TODO use element option
+				'prepend_html' => $element->getOption('prepend_html'),
 				'append_addon' => $appendAddon,
 				'prepend_addon' => $prependAddon,
 		]);

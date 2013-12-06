@@ -11,6 +11,7 @@ $colunms = 12 - $labelColunms;
 	<?= $this->simpleFormRow($element) ?>
 <?php endforeach; //FIXME is there a better way to handle fieldsets? maybe should we use a recursive solution? ?>
 <?php
+//FIXME use as method on helper
 function renderFieldsets($fieldsets, $obj){
     foreach ($fieldsets as $fieldset){
         foreach ($fieldset->getElements() as $element){

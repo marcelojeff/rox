@@ -2,22 +2,22 @@
 $class = sprintf('form-horizontal %s',$form->getAttribute('class'));
 $form->setAttribute ( 'class', $class );
 $form->prepare ();
-$labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
 $colunms = 12 - $labelColunms;
+$options = ['label_colunms' => $labelColunms, 'element_colunms' => $colunms];
 ?>
 
 <?= $this->form()->openTag($form)?>
 <?php foreach ($form->getElements() as $element): ?>
-	<?= $this->simpleFormRow($element) ?>
+	<?= $this->simpleFormRow($element, $options) ?>
 <?php endforeach; //FIXME is there a better way to handle fieldsets? maybe should we use a recursive solution? ?>
 <?php
 //FIXME use as method on helper
-function renderFieldsets($fieldsets, $obj){
+function renderFieldsets($fieldsets, $obj, $options){
     foreach ($fieldsets as $fieldset){
         foreach ($fieldset->getElements() as $element){
-    	   echo $obj->simpleFormRow($element);
+    	   echo $obj->simpleFormRow($element, $options);
     	}
-    	renderFieldsets($fieldset->getFieldsets(), $obj);
+    	renderFieldsets($fieldset->getFieldsets(), $obj, $options);
     }
 }
 ?>
@@ -26,7 +26,7 @@ function renderFieldsets($fieldsets, $obj){
     	<?= $this->simpleFormRow($element) ?>
     <?php endforeach; ?>
 <?php endforeach; */
-renderFieldsets($form->getFieldsets(), $this)?>
+renderFieldsets($form->getFieldsets(), $this, $options)?>
 
 <?php $submitLabel = isset($submitText)?$submitText:'Salvar'; ?>
 	<div class="form-group">

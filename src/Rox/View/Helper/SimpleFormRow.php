@@ -50,8 +50,10 @@ class SimpleFormRow extends AbstractHelper {
 			$element->setLabelAttributes( ['class' => $labelClass] );
 			$label = $this->view->formlabel($element);
 		}
-
-		if(($prependAddon = $element->getOption('prepend_addon')) || ($appendAddon = $element->getOption('append_addon'))){
+		if(($prependAddon = $element->getOption('prepend_addon'))){
+			$inputGroup = 'input-group';
+		}
+		if(($appendAddon = $element->getOption('append_addon'))){
 			$inputGroup = 'input-group';
 		}
 		return $this->view->partial('form-bs3-horizontal-simple-row', [

@@ -76,6 +76,14 @@ class AbstractGateway extends RoxGateway
     	return new Paginator($adapter);
     }
     /**
+     * 
+     * @param array $criteria
+     * @return array
+     */
+    public function findCurrent($criteria = []){
+        return $this->db->{$this->name}->findOne($criteria);
+    }
+    /**
      * @param string $label
      * @return array An associative array with [value => label] format
      */

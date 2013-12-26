@@ -7,26 +7,12 @@ $options = ['label_colunms' => $labelColunms, 'element_colunms' => $colunms];
 ?>
 
 <?= $this->form()->openTag($form)?>
+
 <?php foreach ($form->getElements() as $element): ?>
 	<?= $this->simpleFormRow($element, $options) ?>
-<?php endforeach; //FIXME is there a better way to handle fieldsets? maybe should we use a recursive solution? ?>
-<?php
-//FIXME use as method on helper
-function renderFieldsets($fieldsets, $obj, $options){
-    foreach ($fieldsets as $fieldset){
-        foreach ($fieldset->getElements() as $element){
-    	   echo $obj->simpleFormRow($element, $options);
-    	}
-    	renderFieldsets($fieldset->getFieldsets(), $obj, $options);
-    }
-}
-?>
-<?php /*foreach ($form->getFieldsets() as $fieldset): ?>
-    <?php foreach ($fieldset->getElements() as $element): ?>
-    	<?= $this->simpleFormRow($element) ?>
-    <?php endforeach; ?>
-<?php endforeach; */
-renderFieldsets($form->getFieldsets(), $this, $options)?>
+<?php endforeach;?>
+
+<?php $this->renderFieldsets($form->getFieldsets(), $options) ?>
 
 <?php $submitLabel = isset($submitText)?$submitText:'Salvar'; ?>
 	<div class="form-group">

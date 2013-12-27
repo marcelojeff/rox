@@ -76,6 +76,14 @@ class AbstractGateway extends RoxGateway
     	return new Paginator($adapter);
     }
     /**
+     *
+     * @param array $criteria
+     * @return array
+     */
+    public function count($criteria = []){
+    	return $this->db->{$this->name}->count($criteria);
+    }
+    /**
      * 
      * @param array $criteria
      * @return array

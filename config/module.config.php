@@ -47,6 +47,7 @@ return array(
             'Rox' => __DIR__ . '/../view',
         ),
     	'template_map' => array(
+    	    'nav-left-bs3' => __DIR__ . '/../view/partial/nav-left/bs3.phtml',
     		'breadcrumbs-bs3' => __DIR__ . '/../view/partial/breadcrumbs/bs3.phtml',
     		'paginator-bs3' => __DIR__ . '/../view/partial/paginator/bs3.phtml',
     		'form-bs3-horizontal'	=> __DIR__ . '/../view/partial/form/bs3/horizontal.phtml',

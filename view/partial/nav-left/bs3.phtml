@@ -1,0 +1,27 @@
+<div class="col-md-3">
+	<div class="panel-group" id="left-navigation">
+<?php foreach ($this->container as $index => $page): ?>
+    <?php if($this->navigation('navigation')->menu()->accept($page)): ?>
+    <div class="panel panel-default">
+			<div class="panel-heading">
+				<a class="accordion-toggle" data-toggle="collapse"
+					data-parent="#left-navigation" href="#collapse-<?= $index ?>"> <b><?= $page->getLabel() ?></b>
+				</a>
+			</div>
+			<div id="collapse-<?= $index ?>" class="panel-collapse collapse<? //= ($page->isActive())?'in':''; ?>">
+				<div class="panel-body">
+					<ul class="nav nav-stacked">
+                        <?php foreach($page->getPages() as $child): ?>
+                            <?php if($this->navigation('navigation')->menu()->accept($child)): ?>
+                                <?= ($child->isActive())?'<script>$("#collapse-'. $index .'").collapse("show")</script>':'';?>
+                                <li class=""><?= $this->navigation()->menu()->htmlify($child); ?></li>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </ul>
+				</div>
+			</div>
+		</div>
+	<?php endif; ?>
+<?php endforeach; ?>
+</div>
+</div>

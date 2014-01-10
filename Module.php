@@ -60,6 +60,7 @@ class Module implements AutoloaderProviderInterface
     }
     public function checkAcl(MvcEvent $e) {
     	$route = $e->getRouteMatch ()->getMatchedRouteName ();
+    	$currentUrl = $e->getRequest()->getUriString();
     	$controller = $e->getRouteMatch ()->getParam ( '__CONTROLLER__' );
     	$action = $e->getRouteMatch ()->getParam ( 'action' );
     	$resource = $this->getResource($route, $controller);
@@ -70,12 +71,15 @@ class Module implements AutoloaderProviderInterface
     		$userRole = 'guest';
     	}
     	$acl = $e->getViewModel ()->acl;
+    	
     	if (! $acl->hasResource ( $resource ) || ! $acl->isAllowed ( $userRole, $resource, $action )) {
     		$url = $e->getRouter ()->assemble ( [
     				'action' => 'login'
     				], [
     				'name' => 'user/default'
     				] );
+    		$urlContainer = new Container('url');
+    		$urlContainer->savedUrl = $currentUrl;
     		$response = $e->getResponse ();
     		$response->getHeaders ()->addHeaderLine ( 'Location', $url );
     		$response->setStatusCode ( 302 );
@@ -127,6 +131,7 @@ class Module implements AutoloaderProviderInterface
                 'loggedUser' => function ($sm){
                 	return new LoggedUser($sm->getServiceLocator()->get('logged_user_container'));
                 }
+                
             ),
             'invokables' => [
             		'simpleFormRow' => 'Rox\View\Helper\SimpleFormRow',

@@ -82,13 +82,12 @@ class Module implements AutoloaderProviderInterface
         } else {
             $userRole = 'guest';
         }
-        $acl = $e->getViewModel()->acl;
-        
+        $acl = $e->getViewModel()->acl;        
         if (! $acl->hasResource($resource) || ! $acl->isAllowed($userRole, $resource, $action)) {
-            $message = sprintf('Você não tem permissão para acessar a página atual.');
-            $sm = $e->getApplication()->getServiceManager();
-            $flash = $sm->get('ControllerPluginManager')->get('flashMessenger');
-            $flash->addInfoMessage($message);
+        	$message = sprintf('Você não tem permissão para acessar a página atual.');
+        	$sm = $e->getApplication()->getServiceManager();
+        	$flash = $sm->get('ControllerPluginManager')->get('flashMessenger');
+        	$flash->addInfoMessage($message);
             $url = $e->getRouter()->assemble([
                 'action' => 'login'
             ], [

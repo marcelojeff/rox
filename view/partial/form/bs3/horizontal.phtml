@@ -18,7 +18,7 @@ $options = ['label_colunms' => $labelColunms, 'element_colunms' => $colunms];
 	<div class="form-group">
 		<div class="col-lg-offset-<?= $labelColunms ?> col-lg-<?= $colunms ?>">
 			<button class="btn btn-success" type="submit"><?= $submitLabel ?></button>
-			<button class="btn btn-warning" type="button" data-dismiss="modal">Cancelar</button>
+			<a href="<?= $_SERVER['HTTP_REFERER'] //TODO refactor ?>" class="btn btn-warning" data-dismiss="modal">Cancelar</a>
 		</div>
 	</div>
 <?= $this->form()->closeTag()?>

@@ -2,7 +2,6 @@
 
 namespace Rox\Model;
 
-use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilterInterface;
@@ -58,7 +57,9 @@ abstract class AbstractModel {
                     return $this->fields[$key]['value'];
                 }*/
             	return $this->fields[$key]['value'];
-		    }		    
+		    } elseif(isset($this->fields[$key]['default'])) {
+	    		return $this->fields[$key]['default'];
+	    	}		    
 		}
 		return null;
 	}
@@ -74,7 +75,7 @@ abstract class AbstractModel {
 	        }else{
 	            $this->fields[$key]['value'] = $value;
 	        }*/
-	    	if(isset($value)){
+	    	if(isset($value) && !empty($value)){
 	    		$this->fields[$key]['value'] = $value;
 	    	} elseif(isset($this->fields[$key]['default'])) {
 	    		$this->fields[$key]['value'] = $this->fields[$key]['default'];

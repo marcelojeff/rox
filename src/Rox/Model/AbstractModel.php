@@ -19,6 +19,7 @@ abstract class AbstractModel {
 	const IDENTICAL = 'Zend\Validator\Identical';
 	const POST_CODE = 'Zend\I18n\Validator\PostCode';
 	const FLOAT = 'Zend\I18n\Validator\Float';
+	const URI = 'Zend\Validator\Uri';
 	const TYPE = 0;
 	const LENGTH = 1;
 	const REQUIRED = 2;

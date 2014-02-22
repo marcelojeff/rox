@@ -97,7 +97,7 @@ class AbstractGateway extends RoxGateway
      */
     public function getAssocArray($criteria = [], $label = 'name'){
     	$assoc = [];
-    	$data = $this->db->{$this->name}->find($criteria,['_id', $label]);
+    	$data = $this->db->{$this->name}->find($criteria,['_id', $label])->sort([$label => 1]);
     	foreach ($data as $record){
     		$assoc[$record['_id']->{'$id'}] = $record[$label];
     	}

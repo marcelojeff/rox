@@ -16,10 +16,15 @@
 						<div class="panel-body">
 							<ul class="nav nav-stacked">
 		                        <?php foreach($page['pages'] as $realResource=>$content): ?>
+		                        	<?php $realResource = explode(';',$realResource)[0]; ?>
 	                            	<?php if ($acl->isAllowed($this->loggedUser('type'), $realResource, $content['action'])) :?>
 		                                <?//= ($content['action']->isActive())?'<script>$("#collapse-'. $resource .'").collapse("show")</script>':'';?>
 		                                <?php $paths = explode('/', $realResource)?>
-		                                <li><a class="" href="<?= $this->url($paths[0] . '/default', ['controller' => $paths[1], 'action' => $content['action']])?>"><?= $content['label']; ?></a></li>
+		                                <?php $urlArray = ['controller' => $paths[1], 'action' => $content['action']]?>
+		                                	<?php if(isset($content['id'])) :?>
+		                                		<?php $urlArray['id'] = $content['id']; ?>
+		                                	<?php endif;?>
+		                                <li><a class="" href="<?= $this->url($paths[0] . '/default', $urlArray)?>"><?= $content['label']; ?></a></li>
 	                                <?php endif; ?>
 		                        <?php endforeach; ?>
 		                    </ul>

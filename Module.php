@@ -22,6 +22,7 @@ use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole;
 use Zend\Permissions\Acl\Resource\GenericResource;
 use Zend\View\Helper\FlashMessenger;
+use Rox\View\Helper\Menu;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -150,7 +151,13 @@ class Module implements AutoloaderProviderInterface
                 'loggedUser' => function ($sm)
                 {
                     return new LoggedUser($sm->getServiceLocator()->get('logged_user_container'));
-                }
+                },
+                'menu_builder' => function ($sm)
+                {
+                	$config = $sm->getServiceLocator()->get('config');
+                	$config = $config['menu'];
+                	return new Menu($config);
+                },
             )
             ,
             'invokables' => [

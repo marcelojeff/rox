@@ -1,27 +1,32 @@
+
+
 <div class="col-md-3">
 	<div class="panel-group" id="left-navigation">
-<?php foreach ($this->container as $index => $page): ?>
-    <?php if($this->navigation('navigation')->menu()->accept($page)): ?>
-    <div class="panel panel-default">
-			<div class="panel-heading">
-				<a class="accordion-toggle" data-toggle="collapse"
-					data-parent="#left-navigation" href="#collapse-<?= $index ?>"> <b><?= $page->getLabel() ?></b>
-				</a>
-			</div>
-			<div id="collapse-<?= $index ?>" class="panel-collapse collapse<? //= ($page->isActive())?'in':''; ?>">
-				<div class="panel-body">
-					<ul class="nav nav-stacked">
-                        <?php foreach($page->getPages() as $child): ?>
-                            <?php if($this->navigation('navigation')->menu()->accept($child)): ?>
-                                <?= ($child->isActive())?'<script>$("#collapse-'. $index .'").collapse("show")</script>':'';?>
-                                <li class=""><?= $this->navigation()->menu()->htmlify($child); ?></li>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </ul>
+	<?php $acl = $this->viewmodel()->getCurrent()->acl ?>
+	<?php foreach ($pages as $resource => $page): ?>
+		<?php if ($acl->isAllowed($this->loggedUser('type'), $resource)) :?>
+		    <div class="panel panel-default">
+					<div class="panel-heading">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-parent="#left-navigation" href="#collapse-<?= str_replace('/', '-', $resource); ?>"> <b><?= $page['label'] ?></b>
+						</a>
+					</div>
+					<div id="collapse-<?= str_replace('/', '-', $resource); ?>"
+						class="panel-collapse collapse<? //= ($page->isActive())?'in':''; ?>">
+						<div class="panel-body">
+							<ul class="nav nav-stacked">
+		                        <?php foreach($page['pages'] as $realResource=>$content): ?>
+	                            	<?php if ($acl->isAllowed($this->loggedUser('type'), $realResource, $content['action'])) :?>
+		                                <?//= ($content['action']->isActive())?'<script>$("#collapse-'. $resource .'").collapse("show")</script>':'';?>
+		                                <?php $paths = explode('/', $realResource)?>
+		                                <li><a class="" href="<?= $this->url($paths[0] . '/default', ['controller' => $paths[1], 'action' => $content['action']])?>"><?= $content['label']; ?></a></li>
+	                                <?php endif; ?>
+		                        <?php endforeach; ?>
+		                    </ul>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-	<?php endif; ?>
+		<?php endif; ?>
 <?php endforeach; ?>
 </div>
 </div>

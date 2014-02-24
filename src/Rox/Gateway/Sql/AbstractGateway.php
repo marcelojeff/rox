@@ -3,9 +3,6 @@
 namespace Rox\Db\Sql;
 
 use Zend\Db\TableGateway\AbstractTableGateway as ZendTableGateway;
-use Zend\Db\ResultSet\HydratingResultSet;
-use Rox\Hydrator\MagicMethods;
-use PhlyMongo\HydratingMongoCursor;
 use Rox\Model\AbstractModel;
 
 /**

@@ -112,6 +112,16 @@ class AbstractGateway extends RoxGateway
     	return $this->db->{$this->name}->findOne(['_id' => $this->getMongoId($id)]);
     }
     /**
+     * @param array $data with _id
+     * @return mixed
+     */
+    public function update(array $data){
+    	$data = $this->filterData($data);
+   		$id = $this->getMongoId($data['_id']);
+   		unset($data['_id']);
+    	return $this->getCollection()->update(['_id' => $id], ['$set' => $data]);
+    }
+    /**
      * @param array $data
      * @return mixed
      */

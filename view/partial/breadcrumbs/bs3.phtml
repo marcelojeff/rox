@@ -1,12 +1,18 @@
-<ol class="breadcrumb">
-    <?php foreach ($this->pages as $key => $page): ?>
-        <li>
-            <?php if ($key < count($this->pages) - 1): ?>
-                <a href="<?= $page->getHref(); ?>"><?= $page->getLabel(); ?></a>
-				<span class="divider"></span>
-            <?php else: ?>
-                <?= $page->getLabel(); ?>
-            <?php endif; ?>
-        </li>
-    <?php endforeach; ?>
-</ol>
+<?php if(count($this->pages)): ?>
+<div class="row">
+    <div class="col-lg-12">
+        <ol class="breadcrumb">
+            <?php foreach ($this->pages as $key => $page): ?>
+                <li>
+                    <?php if ($key < count($this->pages) - 1): ?>
+                        <a href="<?= $page->getHref(); ?>"><?= $page->getLabel(); ?></a>
+                        <span class="divider"></span>
+                    <?php else: ?>
+                        <?= $page->getLabel(); ?>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ol>  
+    </div>
+</div>
+<?php endif; ?>

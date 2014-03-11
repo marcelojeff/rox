@@ -13,7 +13,7 @@ class Menu extends AbstractHelper {
 	public function __construct($menuArray) {
 		$this->menuArray = $menuArray;
 	}
-	public function __invoke() {
-		return $this->view->partial('nav-left-bs3', ['pages' => $this->menuArray]);
+	public function __invoke($partial) {
+		return $this->view->partial($partial, ['pages' => $this->menuArray]);
 	}
 }

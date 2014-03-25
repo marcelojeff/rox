@@ -118,11 +118,11 @@ abstract class AbstractModel
                 if (! $fields || in_array($name, $fields)) {
                     if (! empty($options)) {
                         if (isset($options['fieldset'])) {
-                        	$fieldset = new Input($name);
+                        	$fieldset = new InputFilter($name);
                         	foreach ($options['fieldset'] as $field => $opt){
                         	    $fieldset->add($this->getFilter($opt, $field));
                         	}
-                        	$inputFilter->add($fieldset);
+                        	$inputFilter->add($fieldset, $name);
                         } else{
                             $inputFilter->add($this->getFilter($options, $name));
                         }
@@ -136,8 +136,8 @@ abstract class AbstractModel
 
     public function getFilter($options, $name)
     {
+    	$input = new Input($name);
         if (! isset($options['skip_validation'])) {
-            $input = new Input($name);
             $inputValidators = $input->getValidatorChain();
             $inputFilters = $input->getFilterChain();
             
@@ -169,8 +169,7 @@ abstract class AbstractModel
             } else {
                 $input->setRequired(false);
             }
-            return $input;
         }
-        ;
+        return $input;
     }
 }

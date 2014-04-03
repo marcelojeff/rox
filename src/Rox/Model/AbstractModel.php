@@ -70,7 +70,7 @@ abstract class AbstractModel {
 			/*
 			 * if(isset($this->fields[$key]['embedded']) && !isset($this->fields[$key]['value'])){ $this->fields[$key]['value'] = new $this->fields[$key]['embedded']; }else{ $this->fields[$key]['value'] = $value; }
 			 */
-			if (isset ( $value ) && ! empty ( $value )) {
+			if (isset ( $value ) /*&& ! empty ( $value )*/) {
 				$this->fields [$key] ['value'] = $value;
 			} elseif (isset ( $this->fields [$key] ['default'] )) {
 				$this->fields [$key] ['value'] = $this->fields [$key] ['default'];

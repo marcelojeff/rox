@@ -24,7 +24,7 @@ class AuthAdapter implements AdapterInterface {
 	}
 	public function authenticate() {
 		if($this->verifyCredentials()){ 
-				$this->container->username = $this->user->email;
+				$this->container->username = $this->user->username;
 				$this->container->name = $this->user->name;
 				$this->container->type = $this->user->type;
 				return new Result(Result::SUCCESS, $this->username);

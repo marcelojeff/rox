@@ -17,14 +17,16 @@ $options = [
 
 <?php $this->renderFieldsets($form->getFieldsets(), $options)?>
 
-<?php $submitLabel = isset($submitText)?$submitText:'Salvar'; ?>
-<div class="form-group">
-	<div class="col-lg-offset-<?= $labelColunms ?> col-lg-<?= $colunms ?>">
-		<button class="btn btn-success" type="submit"><?= $submitLabel ?></button>
-			<?php if(isset($_SERVER['HTTP_REFERER'])): ?>
-			     <a href="<?= $_SERVER['HTTP_REFERER'] //TODO refactor ?>"
-			class="btn btn-warning" data-dismiss="modal">Cancelar</a>
-			<?php endif;?>
-		</div>
-</div>
-<?= $this->form()->closeTag()?>
+<?php if(!isset($withoutButtons)): ?>
+    <?php $submitLabel = isset($submitText)?$submitText:'Salvar'; ?>
+    <div class="form-group">
+    	<div class="col-lg-offset-<?= $labelColunms ?> col-lg-<?= $colunms ?>">
+    		<button class="btn btn-success" type="submit"><?= $submitLabel ?></button>
+    			<?php if(isset($_SERVER['HTTP_REFERER'])): ?>
+    			     <a href="<?= $_SERVER['HTTP_REFERER'] //TODO refactor ?>"
+    			class="btn btn-warning" data-dismiss="modal">Cancelar</a>
+    			<?php endif;?>
+    		</div>
+    </div>
+    <?= $this->form()->closeTag()?>
+<?php endif; ?>

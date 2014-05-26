@@ -62,19 +62,19 @@ class Module implements AutoloaderProviderInterface
         $e->getViewModel()->acl = $acl;
     }
 
-    private function getResource($route, $controller)
+    public function getResource($mvcEvent)
     {
+        $route = $mvcEvent->getRouteMatch()->getMatchedRouteName();
+        $controller = $mvcEvent->getRouteMatch()->getParam('__CONTROLLER__');
         $route = explode('/', $route);
         return sprintf('%s/%s', $route[0], strtolower($controller));
     }
 
     public function checkAcl(MvcEvent $e)
     {
-        $route = $e->getRouteMatch()->getMatchedRouteName();
         $currentUrl = $e->getRequest()->getUriString();
-        $controller = $e->getRouteMatch()->getParam('__CONTROLLER__');
         $action = $e->getRouteMatch()->getParam('action');
-        $resource = $this->getResource($route, $controller);
+        $resource = $this->getResource($e);
         $session = $e->getApplication()
             ->getServiceManager()
             ->get('logged_user_container');

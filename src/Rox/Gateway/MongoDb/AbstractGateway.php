@@ -4,7 +4,6 @@ namespace Rox\Gateway\MongoDb;
 use PhlyMongo\HydratingMongoCursor;
 use PhlyMongo\HydratingPaginatorAdapter as MongoPaginatorAdapter;
 use Zend\Paginator\Paginator;
-use Zend\Crypt\PublicKey\Rsa\PublicKey;
 use Rox\Gateway\RoxGateway;
 
 /**

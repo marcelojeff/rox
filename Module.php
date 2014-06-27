@@ -126,7 +126,10 @@ class Module implements AutoloaderProviderInterface
                     $config = $sm->get('config');
                     $config = $config['mongo'];
                     $factory = new MongoConnectionFactory($config['server'], $config['server_options']);
-                    return $factory->createService($sm)->selectDB($config['db']);
+                    $connection = $factory->createService($sm);
+                    $connection->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
+                    return $connection->selectDB($config['db']);
+                    
                 },
                 'logged_user_container' => function ($sm)
                 {

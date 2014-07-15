@@ -127,7 +127,6 @@ class Module implements AutoloaderProviderInterface
                     $config = $config['mongo'];
                     $factory = new MongoConnectionFactory($config['server'], $config['server_options']);
                     $connection = $factory->createService($sm);
-                    $connection->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
                     return $connection->selectDB($config['db']);
                     
                 },

@@ -23,6 +23,9 @@ use Zend\Permissions\Acl\Role\GenericRole;
 use Zend\Permissions\Acl\Resource\GenericResource;
 use Zend\View\Helper\FlashMessenger;
 use Rox\View\Helper\Menu;
+use Zend\Cache\StorageFactory;
+use Zend\Session\SaveHandler\Cache;
+use Zend\Session\SessionManager;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -130,8 +133,24 @@ class Module implements AutoloaderProviderInterface
                     return $connection->selectDB($config['db']);
                     
                 },
+                //FIXME make session manager generic
                 'logged_user_container' => function ($sm)
                 {
+                    $config = $sm->get('config');
+                    if(isset($config['use_redis']) && $config['use_redis']){ 
+                        $cache = StorageFactory::factory(array(
+                        		'adapter' => array(
+                        				'name' => 'redis',
+                        				'options' => array(
+                        					'server' => $config['redis']
+                        				),
+                        		)
+                        ));
+                        $saveHandler = new Cache($cache);
+                        $manager = new SessionManager();
+                        $manager->setSaveHandler($saveHandler);
+                        Container::setDefaultManager($manager);
+                    }
                     return new Container('logged_user');
                 }
             )

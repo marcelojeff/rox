@@ -1,11 +1,15 @@
 <?php if ($this->pageCount): ?>
-<?php $params = isset($this->params)?$this->params:[]; ?>
+<?php
+$params = isset($this->params)?$this->params:[];
+$query = isset($this->query)?$this->query:[];
+?>
         <ul class="pagination pagination-centered">
             
             <!-- Previous page link -->
             <?php if (isset($this->previous)): ?>
+                <?php $query['page'] = $this->previous; ?>
                 <li>
-                    <a href="<?php echo $this->url($this->route, $params); ?>?page=<?php echo $this->previous; ?>">
+                    <a href="<?php echo $this->url($this->route, $params, ['query' => $query]); ?>">
                         <span class="glyphicon glyphicon-chevron-left"></span>
                     </a>
                 </li>
@@ -20,8 +24,9 @@
             <!-- Numbered page links -->
             <?php foreach ($this->pagesInRange as $page): ?>
                 <?php if ($page != $this->current): ?>
+                    <?php $query['page'] = $page; ?>
                     <li>
-                        <a href="<?php echo $this->url($this->route, $params);?>?page=<?php echo $page; ?>">
+                        <a href="<?php echo $this->url($this->route, $params, ['query' => $query]); ?>">
                             <?php echo $page; ?>
                         </a>
                     </li>
@@ -34,8 +39,9 @@
 
             <!-- Next page link -->
             <?php if (isset($this->next)): ?>
+                <?php $query['page'] = $this->next; ?>
                 <li>
-                    <a href="<?php echo $this->url($this->route, $params); ?>?page=<?php echo $this->next; ?>">
+                    <a href="<?php echo $this->url($this->route, $params, ['query' => $query]); ?>">
                         <span class="glyphicon glyphicon-chevron-right"></span>
                     </a>
                 </li>

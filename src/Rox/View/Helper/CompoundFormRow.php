@@ -28,7 +28,7 @@ class CompoundFormRow extends AbstractHelper {
 			
 			if ($element['element']->getLabel () && $element['colunms'][self::LABEL_COLUMN]) {
 				$element['element']->setLabelAttributes ( [
-						'class' => sprintf ( 'col-lg-%s control-label', $element['colunms'][self::LABEL_COLUMN])
+						'class' => sprintf ( 'col-md-%s control-label', $element['colunms'][self::LABEL_COLUMN])
 						] );
 				$element['label'] = $this->view->formlabel ( $element['element'] );
 			}

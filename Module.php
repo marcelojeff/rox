@@ -142,7 +142,8 @@ class Module implements AutoloaderProviderInterface
                         		'adapter' => array(
                         				'name' => 'redis',
                         				'options' => array(
-                        					'server' => $config['redis']
+                        					'server' => $config['redis'],
+                        				    'ttl' => 7200
                         				),
                         		)
                         ));

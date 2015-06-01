@@ -1,13 +1,13 @@
 <div class="form-group <?= $hasError ?>">
-	 <?= $label ?>
-	 <div class="col-lg-<?= $colunms ?>">
-	 		<?= $prepend_html ?>
-			<div class="<?= $input_group ?>">
-				<?= $prepend_addon ?>	
-            	<?= $this->formElement($element); ?>
-            	<?= $append_addon ?>
-			</div>
-			<?= $append_html ?>
-		<span class="help-block form-error" style="<?= $display ?>"><?= $errors ?></span>
+    <?= $label; ?>
+    <div class="col-lg-<?= $colunms ?>">
+        <?= $prepend_html?>
+        <div class="<?= $input_group ?>">
+            <?= $prepend_addon ?>    
+            <?= $this->formElement($element); ?>
+            <?= $append_addon?>
+        </div>
+        <?= $append_html?>
+        <span class="help-block form-error" style="<?= $display ?>"><?= $errors ?></span>
 	</div>
 </div>

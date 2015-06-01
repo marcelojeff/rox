@@ -50,6 +50,7 @@ return array(
             'breadcrumbs-bs3' => __DIR__ . '/../view/partial/breadcrumbs/bs3.phtml',
             'paginator-bs3' => __DIR__ . '/../view/partial/paginator/bs3.phtml',
             'form-bs3-simple-row' => __DIR__ . '/../view/partial/form/bs3/default/simple-row.phtml',
+            'form-bs3-compound-row' => __DIR__ . '/../view/partial/form/bs3/default/compound-row.phtml',
             'form-bs3-horizontal' => __DIR__ . '/../view/partial/form/bs3/horizontal.phtml',
             'form-bs3-horizontal-simple-row' => __DIR__ . '/../view/partial/form/bs3/horizontal/simple-row.phtml',
             'form-bs3-horizontal-compound-row' => __DIR__ . '/../view/partial/form/bs3/horizontal/compound-row.phtml',

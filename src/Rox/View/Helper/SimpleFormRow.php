@@ -16,6 +16,11 @@ class SimpleFormRow extends AbstractHelper
         }
         return 'form-control';
     }
+    
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
 
     /**
      * append_addon
@@ -27,11 +32,6 @@ class SimpleFormRow extends AbstractHelper
      * @param unknown $element
      * @param array $options
      */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-    }
-
     public function __invoke(ElementInterface $element, $options = null)
     {
         $elementColunms = 9;
@@ -48,26 +48,33 @@ class SimpleFormRow extends AbstractHelper
             $hasError = 'has-error';
             $display = '';
         }
-        $element->setAttribute('class', $this->getClass($element));
+        $label = $inputGroup = '';
         if ($element->getLabel()) {
-            $labelClass = 'control-label';
+            if($element instanceof \Zend\Form\Element\Radio){
+                $labelClass = 'radio-inline';
+                $inputGroup = 'radio-height-hack';
+            } else {
+                $labelClass = 'control-label';
+                $element->setAttribute('class', $this->getClass($element));
+            }
             if ($this->template == 'form-bs3-horizontal-simple-row') {
                 $labelClass .= sprintf(' col-lg-%s', $labelColunms);
             }
             $element->setLabelAttributes([
                 'class' => $labelClass
             ]);
-            $label = $this->view->formlabel($element);
+            // Is there a better way to do this?
+            $label = str_replace('radio-inline', '', $this->view->formlabel($element));
         }
         if (($prependAddon = $element->getOption('prepend_addon'))) {
-            $inputGroup = 'input-group';
+            $inputGroup .= 'input-group';
         }
         if (($appendAddon = $element->getOption('append_addon'))) {
-            $inputGroup = 'input-group';
+            $inputGroup .= 'input-group';
         }
         return $this->view->partial($this->template, [
-            'label' => $label,
             'element' => $element,
+            'label' => $label,
             'colunms' => $elementColunms,
             'display' => $display,
             'hasError' => $hasError,

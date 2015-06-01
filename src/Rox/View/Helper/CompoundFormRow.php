@@ -5,9 +5,14 @@ use Zend\View\Helper\AbstractHelper;
 
 class CompoundFormRow extends AbstractHelper {
 	
-	private $template; 
+	private $template = 'form-bs3-horizontal-compound-row'; 
 	const LABEL_COLUMN = 0;
 	const ELEMENT_COLUMN = 1;
+	
+	public function setTemplate($template)
+	{
+	    $this->template = $template;
+	}
 	
 	/**
 	 * TODO appends and prepends
@@ -27,8 +32,12 @@ class CompoundFormRow extends AbstractHelper {
 			}
 			
 			if ($element['element']->getLabel () && $element['colunms'][self::LABEL_COLUMN]) {
+			    $labelClass = 'control-label';
+			    if ($this->template == 'form-bs3-horizontal-compound-row') {
+			        $labelClass .= sprintf ( ' col-md-%s', $element['colunms'][self::LABEL_COLUMN]);
+			    }
 				$element['element']->setLabelAttributes ( [
-						'class' => sprintf ( 'col-md-%s control-label', $element['colunms'][self::LABEL_COLUMN])
+						'class' => $labelClass
 						] );
 				$element['label'] = $this->view->formlabel ( $element['element'] );
 			}
@@ -46,6 +55,6 @@ class CompoundFormRow extends AbstractHelper {
 			}
 			
 		}
-		return $this->view->partial('form-bs3-horizontal-compound-row', ['elements' => $elements]);
+		return $this->view->partial($this->template, ['elements' => $elements]);
 	}
 }

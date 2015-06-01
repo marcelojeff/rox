@@ -4,70 +4,79 @@ namespace Rox\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 use Zend\Form\ElementInterface;
 
-class SimpleFormRow extends AbstractHelper {
-	
-	private $template; 
-	
-	
-	protected function getClass($element) {
-	   if($element->getAttribute('class')){
-	       return $element->getAttribute('class') . ' form-control';
-		}
-		return 'form-control';
-	}
-	/**
-	 * append_addon
-	 * prepend_addon
-	 * append_html
-	 * prepend_html
-	 * element_colunms
-	 * label_colunms
-	 *
-	 * TODO change templates in runtime
-	 * @param unknown $element
-	 * @param array $options
-	 */
-	public function __invoke(ElementInterface $element, $options = null) {
-		$elementColunms = 9;
-		$labelColunms = 3;
-		if (isset ( $options['label_colunms'] )) {
-			$labelColunms = $options['label_colunms'];
-		}
-		if(isset($options['element_colunms'])) {
-			$elementColunms = $options['element_colunms'];
-		}
-		
-		$prependAddon = $appendAddon = $inputGroup = $hasError = $label = '';
-		$display = 'display: none;';
-		if ($errors = $this->view->formElementErrors ( $element )) {
-			$hasError = 'has-error';
-			$display = '';
-		}
-		$element->setAttribute('class', $this->getClass($element));
-			
-		if($element->getLabel()){
-		    $labelClass = sprintf ( 'col-lg-%s control-label', $labelColunms );
-			$element->setLabelAttributes( ['class' => $labelClass] );
-			$label = $this->view->formlabel($element);
-		}
-		if(($prependAddon = $element->getOption('prepend_addon'))){
-			$inputGroup = 'input-group';
-		}
-		if(($appendAddon = $element->getOption('append_addon'))){
-			$inputGroup = 'input-group';
-		}
-		return $this->view->partial('form-bs3-horizontal-simple-row', [
-				'label' => $label,
-				'element' => $element,
-				'colunms' => $elementColunms,
-				'display' => $display,
-				'hasError' => $hasError,
-				'errors' => $errors,
-				'input_group' => $inputGroup,
-				'append_html' => $element->getOption('append_html'),
-				'prepend_html' => $element->getOption('prepend_html'),
-				'append_addon' => $appendAddon,
-				'prepend_addon' => $prependAddon,
-		]);
-	}
+class SimpleFormRow extends AbstractHelper
+{
+
+    private $template = 'form-bs3-horizontal-simple-row';
+
+    protected function getClass($element)
+    {
+        if ($element->getAttribute('class')) {
+            return $element->getAttribute('class') . ' form-control';
+        }
+        return 'form-control';
+    }
+
+    /**
+     * append_addon
+     * prepend_addon
+     * append_html
+     * prepend_html
+     * element_colunms
+     * label_colunms
+     * @param unknown $element
+     * @param array $options
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
+
+    public function __invoke(ElementInterface $element, $options = null)
+    {
+        $elementColunms = 9;
+        $labelColunms = 3;
+        if (isset($options['label_colunms'])) {
+            $labelColunms = $options['label_colunms'];
+        }
+        if (isset($options['element_colunms'])) {
+            $elementColunms = $options['element_colunms'];
+        }
+        $prependAddon = $appendAddon = $inputGroup = $hasError = $label = '';
+        $display = 'display: none;';
+        if ($errors = $this->view->formElementErrors($element)) {
+            $hasError = 'has-error';
+            $display = '';
+        }
+        $element->setAttribute('class', $this->getClass($element));
+        if ($element->getLabel()) {
+            $labelClass = 'control-label';
+            if ($this->template == 'form-bs3-horizontal-simple-row') {
+                $labelClass .= sprintf(' col-lg-%s', $labelColunms);
+            }
+            $element->setLabelAttributes([
+                'class' => $labelClass
+            ]);
+            $label = $this->view->formlabel($element);
+        }
+        if (($prependAddon = $element->getOption('prepend_addon'))) {
+            $inputGroup = 'input-group';
+        }
+        if (($appendAddon = $element->getOption('append_addon'))) {
+            $inputGroup = 'input-group';
+        }
+        return $this->view->partial($this->template, [
+            'label' => $label,
+            'element' => $element,
+            'colunms' => $elementColunms,
+            'display' => $display,
+            'hasError' => $hasError,
+            'errors' => $errors,
+            'input_group' => $inputGroup,
+            'append_html' => $element->getOption('append_html'),
+            'prepend_html' => $element->getOption('prepend_html'),
+            'append_addon' => $appendAddon,
+            'prepend_addon' => $prependAddon
+        ]);
+    }
 }

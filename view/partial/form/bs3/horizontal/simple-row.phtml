@@ -1,3 +1,6 @@
+<?php if($element instanceof \Zend\Form\Element\Hidden || $element instanceof \Zend\Form\Element\Csrf): ?>
+    <?= $this->formElement($element); ?>
+<?php else: ?>
 <div class="form-group <?= $hasError ?>">
     <?= $label; ?>
     <div class="col-lg-<?= $colunms ?>">
@@ -11,3 +14,4 @@
         <span class="help-block form-error" style="<?= $display ?>"><?= $errors ?></span>
 	</div>
 </div>
+<?php endif; ?>

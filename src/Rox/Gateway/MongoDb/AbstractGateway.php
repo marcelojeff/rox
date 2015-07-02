@@ -135,19 +135,23 @@ class AbstractGateway extends RoxGateway
     	$this->db->{$this->name}->save($data);
     	return $data;
     }
+
     /**
      * Convert a string into a \MongoId
+     *
      * @param mixed $id
      * @return \MongoId
      */
-    public function getMongoId($id){
-    	if($id instanceof \MongoId){
-    		return $id;
-    	}elseif($id){
-    		return new \MongoId($id);
-    	} else {
-    		throw new \Exception('Parâmetro inválido');
-    	}
+    public function getMongoId($id, $field = 'unknown')
+    {
+        if ($id instanceof \MongoId) {
+            return $id;
+        } elseif (preg_match('/\w{24}/', $id)) {
+            return new \MongoId($id);
+        } else {
+            // throw new \Exception("$field field must match /[a-z0-9]{24}/");
+            throw new \Exception("Parâmetro inválido: $field");
+        }
     }
     /**
      * @param mixed $id

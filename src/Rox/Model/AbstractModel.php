@@ -13,7 +13,7 @@ use Zend\Validator\StringLength;
  * @author Marcelo Araújo
  */
 abstract class AbstractModel {
-	const INT = 'Zend\I18n\Validator\Int';
+	const INT = 'Zend\I18n\Validator\IsInt';
 	const ALPHA = 'Zend\I18n\Validator\Alpha';
 	const EMAIL = 'Zend\Validator\EmailAddress';
 	const ALPHA_NUM = 'Zend\I18n\Validator\Alnum';

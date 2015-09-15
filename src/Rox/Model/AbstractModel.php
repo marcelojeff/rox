@@ -84,6 +84,11 @@ abstract class AbstractModel
         }
     }
 
+    public function getHydrator()
+    {
+        return $this->hydrator;
+    }
+
     /**
      *
      * @param array $data

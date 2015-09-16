@@ -62,7 +62,7 @@ class AbstractGateway extends RoxGateway
      */
     public function getCollection()
     {
-        return $this->getCollection();
+        return $this->db->{$this->name};
     }
 
     /**

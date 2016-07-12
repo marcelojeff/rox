@@ -42,6 +42,8 @@ abstract class AbstractModel
 
     protected $fields;
 
+    protected $hydrator;
+
     protected $name;
 
     public function __construct(HydratorInterface $hydrator = null)

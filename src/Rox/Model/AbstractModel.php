@@ -93,7 +93,8 @@ abstract class AbstractModel
      *
      * @param array $data
      */
-    public function exchangeArray(array $data){
+    public function exchangeArray(array $data)
+    {
         $this->hydrator->hydrate($data, $this);
     }
 

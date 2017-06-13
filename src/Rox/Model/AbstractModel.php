@@ -16,7 +16,7 @@ use Zend\Stdlib\Hydrator\HydratorInterface;
 abstract class AbstractModel
 {
 
-    const INT = 'Zend\I18n\Validator\Int';
+    const INT = 'Zend\I18n\Validator\IsInt';
 
     const ALPHA = 'Zend\I18n\Validator\Alpha';
 

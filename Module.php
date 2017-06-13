@@ -69,8 +69,8 @@ class Module implements AutoloaderProviderInterface
     {
         $route = $mvcEvent->getRouteMatch()->getMatchedRouteName();
         $controller = $mvcEvent->getRouteMatch()->getParam('__CONTROLLER__');
-        $route = explode('/', $route);
-        return sprintf('%s/%s', $route[0], strtolower($controller));
+        $route = str_replace('/default', '', $route);
+        return sprintf('%s/%s', $route, strtolower($controller));
     }
 
     public function checkAcl(MvcEvent $e)
